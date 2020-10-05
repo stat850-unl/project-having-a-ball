@@ -20,6 +20,12 @@ instead of the project proposal.
 
 <https://developer.sportradar.com/docs/read/baseball/MLB_v7_with_Statcast#play-by-play>
 
+https://developer.sportradar.com/docs/read/baseball/MLB_v7_with_Statcast#play-by-play
+The data contains play-by-play statistics for what looks like every player and every pitcher in the game. We will continue to use data specifically on Jose Abreu (for bias case). The data will give us the launch angle, projected distance, and exit velocity for every at bat of Jose's career. We'll also look at hit location, player ID and how it changes over the course of a career.
+
+We may also use the pitchRx package which includes the pitches of and pitch type of any game we can find. We can use this to provide visuals of of the strike zone and how Jose is pitched to on a game to game basis.
+
+
 ## Potential Topics to Explore Using the Data Set
 
 The ultimate idea is to continue the development of a new baseball
