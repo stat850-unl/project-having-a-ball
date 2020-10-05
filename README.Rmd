@@ -1,6 +1,6 @@
 ---
 title: "Stat 850 Project Description"
-author: "Firstname Lastname, Firstname Lastname, ..."
+author: "Jayden Stack, Michael Grantham"
 output: github_document
 ---
 
@@ -29,10 +29,14 @@ Once you have received feedback on your project proposal (via Canvas) you may al
 
 ## Data Set
 Provide a link to your dataset here, and a description of the variables in the data set.
+https://developer.sportradar.com/docs/read/baseball/MLB_v7_with_Statcast#play-by-play
+There are tons and tons of 
 
 ## Potential Topics to Explore Using the Data Set
 Describe avenues you might explore using the data
 
 ## Group Members
-List all of the project contributors here.
+List all of the project contributors here.  
+Jayden Stack
+Michael Grantham
 

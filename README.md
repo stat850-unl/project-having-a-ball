@@ -1,6 +1,6 @@
 Stat 850 Project Description
 ================
-Firstname Lastname, Firstname Lastname, …
+Jayden Stack, Michael Grantham
 
 ## Instructions
 
@@ -27,4 +27,6 @@ Describe avenues you might explore using the data
 
 ## Group Members
 
-List all of the project contributors here.
+List all of the project contributors here.  
+Jayden Stack 
+Michael Grantham

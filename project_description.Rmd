@@ -1,6 +1,8 @@
 ---
 title: "Project Guidelines"
 output: html_document
+author 1: Jayden Stack
+author 2: Michael Grantham
 ---
 
 Your final project consists of a written report and a presentation (uploaded to VidGrid), to be turned in instead of a final exam. In this project, you will select a topic, acquire data from one or more sources, and present any interesting findings you might come across as you explore your data.
@@ -33,7 +35,11 @@ Your final project consists of a written report and a presentation (uploaded to 
 
 - You will be expected to peer-evaluate two other groups presentations and/or reports. 
 
+```{r}
 
+
+
+```
 ## Data Sources
 
 Here are some potential sources of interesting and/or fun data:
