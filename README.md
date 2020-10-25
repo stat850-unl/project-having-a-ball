@@ -24,6 +24,11 @@ This data set contains offensive and defensive statistics of every player dating
 
 We may also use the pitchRx package which includes the pitches of and pitch type of any game we can find. We can use this to provide visuals of the strike zone to create a picture of a pitcher's velocity and tendencies. 
 
+The data contains play-by-play statistics for what looks like every player and every pitcher in the game. We will continue to use data specifically on Jose Abreu (for bias case). The data will give us the launch angle, projected distance, and exit velocity for every at bat of Jose's career. We'll also look at hit location, player ID and how it changes over the course of a career.
+
+We may also use the pitchRx package which includes the pitches of and pitch type of any game we can find. We can use this to provide visuals of of the strike zone and how Jose is pitched to on a game to game basis.
+
+
 ## Potential Topics to Explore Using the Data Set
 
 With the development of Sabermetrics and advanced statistics in major league baseball. Position value has been revolutionized for each of the nine positions on the baseball field. perhaps the two most important positions on the field are the pitcher and catcher. We will be exploring an algorithm that measures the player value of each starting catcher on each major league baseball team.
