@@ -1,0 +1,21 @@
+library(Lahman)
+library(dplyr)
+
+batting <- select(tibble(Batting), playerID, yearID, teamID, G, AB:H, HR) 
+# sort by player, year, team
+batting <- arrange(batting, playerID, yearID, teamID)
+# keep only recent years
+batting <- filter(batting, yearID > 2010)
+# Only select Houston Astros 
+batting <- filter(batting, teamID == "HOU")
+print(batting)
+
+data(Fielding)
+print(Fielding)
+
+#Find the catchers of 2019
+catchers <- select(tibble(Fielding), playerID, yearID, teamID, POS, PB, WP, SB, CS, ZR)
+catchers <- filter(catchers, POS == "C")
+catchers <- filter(catchers, yearID > 2010)
+print(catchers)
+
