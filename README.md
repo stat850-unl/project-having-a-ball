@@ -3,7 +3,7 @@ Stat 850 Project Description
 Stack Jayden, Grantham Michael
 
 ## Instructions
-
+a
 Each member of your team should modify this document in some way and
 push their modifications to the repository in a separate commit. This
 will ensure that you have set your repository up in a way that ensures
