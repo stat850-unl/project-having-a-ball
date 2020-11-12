@@ -1,3 +1,5 @@
+```{r baseball}
+
 library(Lahman)
 library(dplyr)
 # Sample Code I used from one of the assignemnts as reference 
@@ -29,9 +31,27 @@ data(Pitching)
 print(Pitching)
 
 #Find "Aces"in 2013
-pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA)
+pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA, W, L)
 pitchers <- filter(pitchers, yearID == 2013)
 pitchers <- filter(pitchers, IPouts > 450 & ERA < 3.50)
 print (pitchers)
+
+summary(batting)
+
+```
+```{r regression}
+library(aod)
+library(ggplot2)
+
+#pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA, W, L)
+pitchers <- pitchers %>% mutate(WMinusL = W-L)
+
+mylogit <- glm(WMinusL ~ IPouts + BB + SO + BAOpp + ERA, data = pitchers)
+summary(mylogit)
+
+mylm<-lm(WMinusL ~ IPouts + BB + SO + BAOpp + ERA, data = pitchers)
+summary(mylm)
+
+```
 
 
