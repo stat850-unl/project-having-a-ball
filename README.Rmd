@@ -1,10 +1,6 @@
 ---
 title: "Stat 850 Project Description"
-<<<<<<< HEAD
-author: "Jayden Stack, Michael Grantham"
-=======
 author: "Stack Jayden, Grantham Michael"
->>>>>>> 6366bc0bebbdc947b84cd0151769d957cbd2c9e4
 output: github_document
 ---
 
@@ -34,18 +30,15 @@ Note that you must compile your readme (this document) for it to properly displa
 Once you have received feedback on your project proposal (via Canvas) you may alter this README so that it describes your final project instead of the project proposal. 
 
 ## Data Set
-<<<<<<< HEAD
+
 Provide a link to your dataset here, and a description of the variables in the data set.
-https://developer.sportradar.com/docs/read/baseball/MLB_v7_with_Statcast#play-by-play
-There are tons and tons of 
-=======
+
 We will use the Lahman data set in R.
 
 This data set contains offensive and defensive statistics of every player dating back to the late 1800's. We will filter down and identify the variables that will be used in the player evaluation algorithm.  
 
 We may also use the pitchRx package which includes the pitches of and pitch type of any game we can find. We can use this to provide visuals of the strike zone to create a picture of a pitcher's velocity and tendencies. 
 
->>>>>>> 6366bc0bebbdc947b84cd0151769d957cbd2c9e4
 
 ## Potential Topics to Explore Using the Data Set
 
@@ -58,11 +51,12 @@ Lastly, we will consider the interaction between pitcher and catcher. We will ai
 
 
 ## Group Members
-<<<<<<< HEAD
+
 List all of the project contributors here.  
+
 Jayden Stack
 Michael Grantham
-=======
-Jayden Stack and Michael Grantham
->>>>>>> 6366bc0bebbdc947b84cd0151769d957cbd2c9e4
+
+
+
 

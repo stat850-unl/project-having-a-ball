@@ -1,10 +1,8 @@
 Stat 850 Project Description
-================
-<<<<<<< HEAD
+
+
 Jayden Stack, Michael Grantham
-=======
-Stack Jayden, Grantham Michael
->>>>>>> 6366bc0bebbdc947b84cd0151769d957cbd2c9e4
+
 
 ## Instructions
 
@@ -39,10 +37,10 @@ Lastly, we will consider the interaction between pitcher and catcher. We will ai
 
 ## Group Members
 
-<<<<<<< HEAD
+
 List all of the project contributors here.  
+
 Jayden Stack 
 Michael Grantham
-=======
-Jayden Stack and Michael Grantham
->>>>>>> 6366bc0bebbdc947b84cd0151769d957cbd2c9e4
+
+
