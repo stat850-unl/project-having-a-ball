@@ -41,17 +41,120 @@ summary(batting)
 ```
 ```{r regression}
 library(aod)
+library(mgcv)
 library(ggplot2)
 
-#pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA, W, L)
-pitchers <- pitchers %>% mutate(WMinusL = W-L)
+#Select columns from the Pitching dataset
+pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA, W, L)
 
-mylogit <- glm(WMinusL ~ IPouts + BB + SO + BAOpp + ERA, data = pitchers)
-summary(mylogit)
 
-mylm<-lm(WMinusL ~ IPouts + BB + SO + BAOpp + ERA, data = pitchers)
+#Create a Net Wins column
+pitchers <- pitchers %>% mutate(NetWins = W-L)
+
+#Only keep rows where there is no missing data
+pitchers <- pitchers[complete.cases(pitchers),]
+
+#Normalize data so that coefficients are meaningful
+pitchers <- pitchers %>% mutate(normIPouts = (IPouts - mean(IPouts)) / sd(IPouts))
+pitchers <- pitchers %>% mutate(normBB = (BB - mean(BB)) / sd(BB))
+pitchers <- pitchers %>% mutate(normSO = (SO - mean(SO)) / sd(SO))
+pitchers <- pitchers %>% mutate(normBAOpp = (BAOpp - mean(BAOpp)) / sd(BAOpp))
+pitchers <- pitchers %>% mutate(normERA = (ERA - mean(ERA)) / sd(ERA))
+
+
+
+#Build Linear Model
+mylm <- lm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
+
+#Analyze Findings
 summary(mylm)
+summary(mylm)$r.squared 
+
+#Note, these findings mean that our regression sucks. Trying a new regression.
+mygam <- gam(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
+summary(mygam)
+summary(mygam)$r.squared
+
+#Note, these results also suck. Trying a new regression.
+myglm <- glm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, family = gaussian, data = pitchers)
+summary(myglm)
 
 ```
+
+
+```{r interaction}
+
+#Note, all of these results suck. Going to try an interaction effects model including a few more variables
+
+pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA, W, L, HR, IBB, GIDP)
+
+
+#Create a Net Wins column
+pitchers <- pitchers %>% mutate(NetWins = W-L)
+
+#Only keep rows where there is no missing data
+pitchers <- pitchers[complete.cases(pitchers),]
+
+#Normalize data so that coefficients are meaningful
+pitchers <- pitchers %>% mutate(normIPouts = (IPouts - mean(IPouts)) / sd(IPouts))
+pitchers <- pitchers %>% mutate(normBB = (BB - mean(BB)) / sd(BB))
+pitchers <- pitchers %>% mutate(normSO = (SO - mean(SO)) / sd(SO))
+pitchers <- pitchers %>% mutate(normBAOpp = (BAOpp - mean(BAOpp)) / sd(BAOpp))
+pitchers <- pitchers %>% mutate(normERA = (ERA - mean(ERA)) / sd(ERA))
+pitchers <- pitchers %>% mutate(normNetWins = (NetWins - mean(NetWins)) / sd(NetWins))
+pitchers <- pitchers %>% mutate(normHR = (HR - mean(HR)) / sd(HR))
+pitchers <- pitchers %>% mutate(normIBB = (IBB - mean(IBB)) / sd(IBB))
+pitchers <- pitchers %>% mutate(normGIDP = (GIDP - mean(GIDP)) / sd(GIDP))
+
+mylm <- lm(NetWins ~ normIPouts * normBB * normSO * normBAOpp * normERA *normHR * normIBB * normGIDP, data = pitchers)
+
+#Analyze Findings
+summary(mylm)
+summary(mylm)$r.squared 
+
+```
+
+```{r interaction2}
+
+#Note, all of these results still suck. Going to try an interaction model with everything
+
+#Select columns from the Pitching dataset
+pitchers <- tibble(Pitching)
+
+#Create a Net Wins column
+pitchers <- pitchers %>% mutate(NetWins = W-L)
+
+#Only keep rows where there is no missing data
+pitchers <- pitchers[complete.cases(pitchers),]
+
+
+
+mylm <- lm(NetWins ~ IPouts*HR*BB*SO*BAOpp*ERA*IBB*WP*HBP*BK*BFP*GIDP, data = pitchers)
+
+#Analyze Findings
+#summary(mylm)
+summary(mylm)$r.squared 
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
