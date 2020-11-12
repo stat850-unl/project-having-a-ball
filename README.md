@@ -1,13 +1,11 @@
 Stat 850 Project Description
-================
-<<<<<<< HEAD
+
+
 Jayden Stack, Michael Grantham
-=======
-Stack Jayden, Grantham Michael
->>>>>>> 6366bc0bebbdc947b84cd0151769d957cbd2c9e4
+
 
 ## Instructions
-a
+
 Each member of your team should modify this document in some way and
 push their modifications to the repository in a separate commit. This
 will ensure that you have set your repository up in a way that ensures
@@ -39,10 +37,10 @@ Lastly, we will consider the interaction between pitcher and catcher. We will ai
 
 ## Group Members
 
-<<<<<<< HEAD
+
 List all of the project contributors here.  
+
 Jayden Stack 
 Michael Grantham
-=======
-Jayden Stack and Michael Grantham
->>>>>>> 6366bc0bebbdc947b84cd0151769d957cbd2c9e4
+
+
