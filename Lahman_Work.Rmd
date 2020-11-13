@@ -1,0 +1,160 @@
+```{r baseball}
+
+library(Lahman)
+library(dplyr)
+# Sample Code I used from one of the assignemnts as reference 
+data(Batting)
+print(Batting)
+batting <- select(tibble(Batting), playerID, yearID, teamID, G, AB:H, HR) 
+# sort by player, year, team
+batting <- arrange(batting, playerID, yearID, teamID)
+# keep only recent years
+batting <- filter(batting, yearID > 2010)
+# Only select Houston Astros 
+batting <- filter(batting, teamID == "HOU")
+print(batting)
+
+#Look at data
+data(Fielding)
+print(Fielding)
+
+#Find the catchers of 2013
+catchers <- select(tibble(Fielding), playerID, yearID, teamID, POS, G, PB, WP, SB, CS)
+catchers <- filter(catchers, POS == "C")
+catchers <- filter(catchers, yearID == 2013)
+catchers <- filter(catchers, G > 76)
+print(catchers)
+#Found our starting catchers in 2013. 
+
+#Look at data
+data(Pitching)
+print(Pitching)
+
+#Find "Aces"in 2013
+pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA, W, L)
+pitchers <- filter(pitchers, yearID == 2013)
+pitchers <- filter(pitchers, IPouts > 450 & ERA < 3.50)
+print (pitchers)
+
+summary(batting)
+
+```
+```{r regression}
+library(aod)
+library(mgcv)
+library(ggplot2)
+
+#Select columns from the Pitching dataset
+pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA, W, L)
+
+
+#Create a Net Wins column
+pitchers <- pitchers %>% mutate(NetWins = W-L)
+
+#Only keep rows where there is no missing data
+pitchers <- pitchers[complete.cases(pitchers),]
+
+#Normalize data so that coefficients are meaningful
+pitchers <- pitchers %>% mutate(normIPouts = (IPouts - mean(IPouts)) / sd(IPouts))
+pitchers <- pitchers %>% mutate(normBB = (BB - mean(BB)) / sd(BB))
+pitchers <- pitchers %>% mutate(normSO = (SO - mean(SO)) / sd(SO))
+pitchers <- pitchers %>% mutate(normBAOpp = (BAOpp - mean(BAOpp)) / sd(BAOpp))
+pitchers <- pitchers %>% mutate(normERA = (ERA - mean(ERA)) / sd(ERA))
+
+
+
+#Build Linear Model
+mylm <- lm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
+
+#Analyze Findings
+summary(mylm)
+summary(mylm)$r.squared 
+
+#Note, these findings mean that our regression sucks. Trying a new regression.
+mygam <- gam(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
+summary(mygam)
+summary(mygam)$r.squared
+
+#Note, these results also suck. Trying a new regression.
+myglm <- glm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, family = gaussian, data = pitchers)
+summary(myglm)
+
+```
+
+
+```{r interaction}
+
+#Note, all of these results suck. Going to try an interaction effects model including a few more variables
+
+pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA, W, L, HR, IBB, GIDP)
+
+
+#Create a Net Wins column
+pitchers <- pitchers %>% mutate(NetWins = W-L)
+
+#Only keep rows where there is no missing data
+pitchers <- pitchers[complete.cases(pitchers),]
+
+#Normalize data so that coefficients are meaningful
+pitchers <- pitchers %>% mutate(normIPouts = (IPouts - mean(IPouts)) / sd(IPouts))
+pitchers <- pitchers %>% mutate(normBB = (BB - mean(BB)) / sd(BB))
+pitchers <- pitchers %>% mutate(normSO = (SO - mean(SO)) / sd(SO))
+pitchers <- pitchers %>% mutate(normBAOpp = (BAOpp - mean(BAOpp)) / sd(BAOpp))
+pitchers <- pitchers %>% mutate(normERA = (ERA - mean(ERA)) / sd(ERA))
+pitchers <- pitchers %>% mutate(normNetWins = (NetWins - mean(NetWins)) / sd(NetWins))
+pitchers <- pitchers %>% mutate(normHR = (HR - mean(HR)) / sd(HR))
+pitchers <- pitchers %>% mutate(normIBB = (IBB - mean(IBB)) / sd(IBB))
+pitchers <- pitchers %>% mutate(normGIDP = (GIDP - mean(GIDP)) / sd(GIDP))
+
+mylm <- lm(NetWins ~ normIPouts * normBB * normSO * normBAOpp * normERA *normHR * normIBB * normGIDP, data = pitchers)
+
+#Analyze Findings
+summary(mylm)
+summary(mylm)$r.squared 
+
+```
+
+```{r interaction2}
+
+#Note, all of these results still suck. Going to try an interaction model with everything
+
+#Select columns from the Pitching dataset
+pitchers <- tibble(Pitching)
+
+#Create a Net Wins column
+pitchers <- pitchers %>% mutate(NetWins = W-L)
+
+#Only keep rows where there is no missing data
+pitchers <- pitchers[complete.cases(pitchers),]
+
+
+
+mylm <- lm(NetWins ~ IPouts*HR*BB*SO*BAOpp*ERA*IBB*WP*HBP*BK*BFP*GIDP, data = pitchers)
+
+#Analyze Findings
+#summary(mylm)
+summary(mylm)$r.squared 
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
