@@ -1,0 +1,13 @@
+```{r pitchers}
+
+library(tidyverse)
+pitchers <-  read_csv("stats.csv")
+
+
+
+pitchers <- tibble(pitchers)
+
+pitchers
+
+
+```
