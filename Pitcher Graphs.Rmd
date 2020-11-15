@@ -52,7 +52,7 @@ while (i < length(pitchers$Years_In_Pitching)){
     i=i+1
   }
 }
-pitchers <- pitchers %>% filter(Years_In_Pitching >=10)
+
 #Aggregate by Years In Pitching and find the mean OBP for each of these
 pitchers_by_years_pitched <- pitchers %>%                                       
   group_by(Years_In_Pitching) %>%                        
