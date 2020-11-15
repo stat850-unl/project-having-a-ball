@@ -52,7 +52,7 @@ while (i < length(pitchers$Years_In_Pitching)){
     i=i+1
   }
 }
-pitchers
+pitchers <- pitchers %>% filter(Years_In_Pitching >=10)
 #Aggregate by Years In Pitching and find the mean OBP for each of these
 pitchers_by_years_pitched <- pitchers %>%                                       
   group_by(Years_In_Pitching) %>%                        
@@ -65,10 +65,55 @@ ggplot(pitchers_by_years_pitched, aes(Years_In_Pitching, OBP, fill = "green")) +
   theme(plot.title = element_text(hjust = 0.5))
 
 ```
+```{r}
+#Look at the trajectories of several careers.
+
+AndyBenes <- pitchers %>% filter(name == "Andy Benes")
+
+ggplot(AndyBenes, aes(Years_In_Pitching, on_base_percent, fill = "green")) +
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  ggtitle("OBP by Years in Pitching") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+AJBurnett <- pitchers %>% filter(name == "A.J. Burnett")
+
+ggplot(AJBurnett, aes(Years_In_Pitching, on_base_percent, fill = "green")) +
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  ggtitle("OBP by Years in Pitching") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+AdamWainwright <- pitchers %>% filter(name== "Adam Wainwright")
+
+ggplot(AdamWainwright, aes(Years_In_Pitching, on_base_percent, fill = "green")) +
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  ggtitle("OBP by Years in Pitching") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+AndyPettitte <- pitchers %>% filter(name== "Andy Pettitte")
+
+ggplot(AndyPettitte, aes(Years_In_Pitching, on_base_percent, fill = "green")) +
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  ggtitle("OBP by Years in Pitching") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+```
+
+
+```{r curious}
+
+#Curious about the effect of age AND years in pitching on OBP
+
+mylm <- lm(on_base_percent ~ player_age * Years_In_Pitching, data = pitchers)
+
+#Analyze Findings
+summary(mylm)
+summary(mylm)$r.squared 
 
 
 
 
 
+```
 
 
