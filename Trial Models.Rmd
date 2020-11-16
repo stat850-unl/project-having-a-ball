@@ -1,0 +1,30 @@
+```{r Advanced}
+#Read in data
+advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
+advancedPitchers <- tibble(advancedPitchers)
+
+advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
+
+
+
+
+```
+
+
+```{r Model}
+#Let's explore another model idea using advanced metrics
+mylm <- lm(on_base_percent ~  fastball_avg_speed * breaking_avg_speed * offspeed_avg_speed, data = advancedPitchers)
+
+#Analyze Findings
+summary(mylm)
+summary(mylm)$r.squared 
+```
+```{r Model}
+#Let's explore another model idea using advanced metrics
+mylm <- lm(on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_percent * sweet_spot_percent * barrel_batted_rate * solidcontact_percent,  data = advancedPitchers)
+
+#Analyze Findings
+summary(mylm)
+summary(mylm)$r.squared 
+```
+
