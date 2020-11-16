@@ -3,22 +3,22 @@
 advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
 advancedPitchers <- tibble(advancedPitchers)
 
-advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
-
-
-
-
 ```
 
 
 ```{r Model}
 #Let's explore another model idea using advanced metrics
-mylm <- lm(on_base_percent ~  fastball_avg_speed * breaking_avg_speed * offspeed_avg_speed, data = advancedPitchers)
+mylm <- lm(on_base_percent ~  fastball_avg_speed * breaking_avg_speed * offspeed_avg_speed * fastball_avg_spin * breaking_avg_spin * offspeed_avg_spin, data = advancedPitchers)
 
 #Analyze Findings
 summary(mylm)
 summary(mylm)$r.squared 
+
+#These findings still don't really help us at all. Back to the drawing board.
+
 ```
+
+
 ```{r Model}
 #Let's explore another model idea using advanced metrics
 mylm <- lm(on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_percent * sweet_spot_percent * barrel_batted_rate * solidcontact_percent,  data = advancedPitchers)
@@ -26,5 +26,7 @@ mylm <- lm(on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_pe
 #Analyze Findings
 summary(mylm)
 summary(mylm)$r.squared 
+
+#Again, not too useful at all. Consider something different.
 ```
 
