@@ -117,3 +117,82 @@ summary(mylm)$r.squared
 ```
 
 
+```{r prepare data for interactive graph}
+
+pitchers <-  read_csv("stats.csv")
+pitchers <- tibble(pitchers)
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers[order(pitchers$player_age),]
+
+pitchers <- pitchers[order(pitchers$name),]
+
+pitchers <- pitchers %>% mutate(decade = (year %/% 10)*10)
+
+pitchers <- pitchers %>% mutate(NetWins = W-L)
+
+pitchers
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r interactive graph }
+
+
+#devtools::install_github("bokeh/rbokeh@v0.6.3")
+
+library(rbokeh)
+
+
+iris$sw <- paste0(iris$Sepal.Width * 20, "px")
+iris$pw <- paste0(iris$Petal.Width * 20, "px")
+iris$sl <- paste0(iris$Sepal.Length * 20, "px")
+iris$pl <- paste0(iris$Petal.Width * 20, "px")
+
+style_str <- "white-space: nowrap; border: 1px solid white; background: steelblue; height: 15px;"
+
+figure() %>%
+  ly_points(x = on_base_percent, y = p_strikeout, color = decade,
+  data = pitchers, hover = glue::glue("
+<div>
+  <div style='{style_str} width: @sw'>Sepal width</div>
+  <div style='{style_str} width: @pw'>Petal Width</div>
+  <div style='{style_str} width: @sl'>Sepal width</div>
+  <div style='{style_str} width: @pl'>Petal Length</div>
+</div>
+"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+
