@@ -21,7 +21,7 @@ pitchers_aggregated_by_age <- pitchers %>%
   summarise_at(vars(on_base_percent),          
                list(OBP = mean))               
 
-#The original idea was to graph the pitcher data by age, but we ran into a problem. Obviously if your OBP drops too much, you get booted. So the average was relatively stable over time, except on the old end. If you're an older pitcher and you're still in the league--you're probably quite excellent.
+#The original idea was to graph the pitcher data by age, but we ran into a problem. Obviously if your OBP jumps too much, you get booted. So the average was relatively stable over time, except on the old end. 
 ggplot(pitchers_aggregated_by_age, aes(player_age, OBP, fill = "green")) +
   geom_bar(stat = "identity", show.legend = FALSE) + 
   ggtitle("OBP by age") +
@@ -130,7 +130,7 @@ pitchers <- pitchers[order(pitchers$name),]
 
 pitchers <- pitchers %>% mutate(decade = (year %/% 10)*10)
 
-pitchers <- pitchers %>% mutate(NetWins = W-L)
+
 
 pitchers
 
@@ -158,23 +158,27 @@ pitchers
 library(rbokeh)
 
 
-iris$sw <- paste0(iris$Sepal.Width * 20, "px")
-iris$pw <- paste0(iris$Petal.Width * 20, "px")
-iris$sl <- paste0(iris$Sepal.Length * 20, "px")
-iris$pl <- paste0(iris$Petal.Width * 20, "px")
+#Read in data, cast as tibble
+pitchers <-  read_csv("stats.csv")
+pitchers <- tibble(pitchers)
 
-style_str <- "white-space: nowrap; border: 1px solid white; background: steelblue; height: 15px;"
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers[order(pitchers$player_age),]
+
+pitchers <- pitchers[order(pitchers$name),]
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers[order(pitchers$player_age),]
+
+pitchers <- pitchers[order(pitchers$name),]
+
+pitchers <- pitchers %>% mutate(decade = (year %/% 10)*10)
 
 figure() %>%
   ly_points(x = on_base_percent, y = p_strikeout, color = decade,
-  data = pitchers, hover = glue::glue("
-<div>
-  <div style='{style_str} width: @sw'>Sepal width</div>
-  <div style='{style_str} width: @pw'>Petal Width</div>
-  <div style='{style_str} width: @sl'>Sepal width</div>
-  <div style='{style_str} width: @pl'>Petal Length</div>
-</div>
-"))
+  data = pitchers, hover = list(name, year, on_base_percent, p_strikeout))
 
 
 
