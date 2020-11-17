@@ -59,7 +59,11 @@ ui <- fluidPage(
     ),
   ),
   # Create a new row for the table.
-  DT::dataTableOutput("table")
+  DT::dataTableOutput("table"),
+  
+  plotOutput("bar")
+  
+
 )
 
 
@@ -79,31 +83,17 @@ server <- function(input, output) {
       data <- data[data$year == input$yearInLeague,]
     }
   }))
-  
-  reactive_data = reactive({
-    selected_player = input$player
-    return(data[data$name==selected_player,])
-    
-  })
-  
-  output$bar <- renderPlot({
-    
-    color <- c("blue", "red")
-    
-    our_data <- reactive_data()
-    
-    barplot(colSums(our_data[,year]),
-            ylab="Year",
-            xlab="OBP",
-            col = color)
-  })
 
+  
   output$bar <- renderPlot ({
-    data %>% ggplot(data, aes(input$Years_In_Pitching, input$on_base_percent))
-    + geom_bar(stat = "identity", show.legend = FALSE) +
+    pitchers %>% dplyr::filter(name == input$player, 
+                    # year == input$yearInLeague
+                    ) %>%
+     ggplot(aes(x = Years_In_Pitching, y = on_base_percent)) + 
+      geom_bar(stat = "identity", show.legend = FALSE) +
       ggtitle("OBP ")
   })
-  data
+  
 }
 
 
