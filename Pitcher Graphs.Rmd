@@ -156,7 +156,8 @@ pitchers
 #devtools::install_github("bokeh/rbokeh@v0.6.3")
 
 library(rbokeh)
-
+library(quanteda)
+library(tidyverse)
 
 #Read in data, cast as tibble
 pitchers <-  read_csv("stats.csv")
@@ -164,26 +165,51 @@ pitchers <- tibble(pitchers)
 
 pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
 
-pitchers <- pitchers[order(pitchers$player_age),]
-
-pitchers <- pitchers[order(pitchers$name),]
-
 pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
 
 pitchers <- pitchers[order(pitchers$player_age),]
 
 pitchers <- pitchers[order(pitchers$name),]
 
+
+#Add an empty column that we can populate in the next chunk
+emptycolumn <- c("Years_In_Pitching")
+pitchers[ , emptycolumn] <- NA
+
+
+pitchers$Years_In_Pitching[1]<-1
+
+i<-2
+while (i < length(pitchers$Years_In_Pitching)){
+  if(i==1){
+    pitchers$Years_In_Pitching[i]=1
+    i=i+1
+    }
+  else if(pitchers$name[i]==pitchers$name[i-1]){
+    pitchers$Years_In_Pitching[i]=pitchers$Years_In_Pitching[i-1]+1
+    i=i+1
+    }
+  else if(pitchers$name[i]!=pitchers$name[i-1]){
+    pitchers$Years_In_Pitching[i] = 1
+    i=i+1
+  }
+}
+
 pitchers <- pitchers %>% mutate(decade = (year %/% 10)*10)
 
+pitchers
+
 figure() %>%
-  ly_points(x = on_base_percent, y = p_strikeout, color = decade,
+  ly_points(x = on_base_percent, y = p_strikeout, color = Years_In_Pitching,
   data = pitchers, hover = list(name, year, on_base_percent, p_strikeout))
 
 
 
 
-
+library(ggplot2)
+library(plotly) 
+p <- ggplot(pitchers, aes(on_base_percent, p_strikeout, colour=decade)) + geom_point()
+ ggplotly(p)
 
 
 
