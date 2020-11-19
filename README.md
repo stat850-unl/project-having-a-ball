@@ -24,16 +24,16 @@ We will use the Lahman data set in R.
 
 This data set contains offensive and defensive statistics of every player dating back to the late 1800's. We will filter down and identify the variables that will be used in the player evaluation algorithm.  
 
-We may also use the pitchRx package which includes the pitches of and pitch type of any game we can find. We can use this to provide visuals of the strike zone to create a picture of a pitcher's velocity and tendencies. 
+We will also use two customized CSV files chosen by us from baseballsavant.com. This allows us to freely choose the variables that we think will properly represent a projection of both wins and OBP. Variables that will be considered are OBP, Wins, Hits, ERA, Average exit velocity allowed, Average fastball speed, Average offspeed pitch spin rate, and others. 
 
 
 ## Potential Topics to Explore Using the Data Set
 
-With the development of Sabermetrics and advanced statistics in major league baseball. Position value has been revolutionized for each of the nine positions on the baseball field. perhaps the two most important positions on the field are the pitcher and catcher. We will be exploring an algorithm that measures the player value of each starting catcher on each major league baseball team.
+With the development of Sabermetrics and advanced statistics in major league baseball. Position value has been revolutionized for each of the nine positions on the baseball field. Perhaps the most important player on the field is the pitcher. They are involved in 100% of plays in baseball and control many aspects of the game. We will explore an algorithm that projects pitcher success. 
 
-We will also consider the player value of pitchers in the league similarly to the catching position. For the sake of data, we will only consider the "ace"or the best pitcher of each team. 
+Pitcher success, to an individual outside of sports, could be classified purely as the amount of wins one has in a season. Others know that there are a lot of different aspects of pitching that correlate to pitcher success. For our study, we will consider pitcher success based off of lack of hitter success. I.e. the lower on base percentage (OBP) the pitcher possess,the more successful he is. 
 
-Lastly, we will consider the interaction between pitcher and catcher. We will aim to find out which battery combination is the best in the MLB--comparing team to team. That is what pitcher and catcher combination is the best in the MLB. Then we will look to find out the best overall combination of pitcher and catcher in the MLB based on player value. 
+We will also consider the same variables as if we are newcomers to the sport conducting a similar experiment. Thus, we will be consider pitcher success to be the number of wins he wins in a season. 
 
 ## Group Members
 
