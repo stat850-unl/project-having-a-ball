@@ -34,6 +34,8 @@ while (i < length(pitchers$Years_In_Pitching)){
   }
 }
 
+Qualifiedpitchers <- pitchers %>% filter(Years_In_Pitching > 5)
+
 
 # Define UI for application that draws a histogram
 # Load the ggplot2 package which provides
@@ -88,113 +90,16 @@ server <- function(input, output) {
   output$bar <- renderPlot ({
     pitchers %>% dplyr::filter(name == input$player, 
                     # year == input$yearInLeague
-                    ) %>%
+                    ) %>% 
      ggplot(aes(x = Years_In_Pitching, y = on_base_percent)) + 
       geom_bar(stat = "identity", show.legend = FALSE) +
-      ggtitle("OBP ")
+      ggtitle("Career OBP ")
   })
+  
+  
   
 }
 
-
 # Run the application
 shinyApp(ui = ui, server = server)
-
-# library(shiny)
-# library(tidyverse)
-# library(DT)
-# 
-# dataframe1 <- data.frame(Player = rep(c("Lebron", "Steph", "Harden",
-#                                         "Giannis"), each = 30),
-#                          Game = rep(1:30, 4),
-#                          Points = round(runif(120, 15, 40), 0))
-# 
-# ui <- fluidPage(
-#   sidebarPanel(
-#     selectInput("player",
-#                 "Select a player",
-#                 choices = unique(dataframe1$Player))
-#   ),
-#   
-#   mainPanel(
-#     dataTableOutput("average")
-#   )
-# )
-# 
-# server <- function(input, output, session){
-#   playerFilt <- reactive({
-#     dataframe1 %>%
-#       filter(Player == input$player)
-#   })
-#   
-#   output$average <- renderDataTable({
-#     datatable(playerFilt() %>%
-#                 summarise(PPG = sum(Points) / n()), rownames = FALSE, selection = 'none',
-#               callback = JS("table.on('click.dt', 'td', function() {
-#                                Shiny.onInputChange('click', Math.random());
-#                 });"))
-#   })
-#   
-#   # define modal
-#   plotModal <- function() {
-#     modalDialog(
-#       plotOutput("ptdist")
-#     )
-#   }
-#   
-#   observeEvent(input$click, {
-#     print("Clicked!")
-#     removeModal()
-#     showModal(plotModal())
-#   })
-#   
-#   output$ptdist <- renderPlot({
-#     playerFilt() %>%
-#       ggplot() +
-#       geom_histogram(aes(x = Points),binwidth = 2.5, fill = "skyblue", color = "black") +
-#       theme_bw()
-#   })
-# }
-# 
-# shinyApp(ui, server)
-# 
-
-
-# data = data.frame(Population=sample(1:20,10),Households = sample(1:20,10), year=sample(c(2000,2010),10,replace=T))
-# 
-# ui <- fluidPage(
-#   titlePanel(title = h4("Hillsborough County Population by Census", align="center")),
-#   sidebarPanel(
-#     
-#     radioButtons("YEAR", "Select the Census Year",
-#                  choices = c("2000", "2010"),
-#                  selected = "2000")),
-#   
-#   
-#   mainPanel(
-#     plotOutput("bar",height = 500))
-# )
-# 
-# server <- function(input,output){
-#   
-#   reactive_data = reactive({
-#     selected_year = as.numeric(input$YEAR)
-#     return(data[data$year==selected_year,])
-#     
-#   })
-#   
-#   output$bar <- renderPlot({
-#     
-#     color <- c("blue", "red")
-#     
-#     our_data <- reactive_data()
-#     
-#     barplot(colSums(our_data[,c("Population","Households")]),
-#             ylab="Total",
-#             xlab="Census Year",
-#             names.arg = c("Population", "Households"),
-#             col = color)
-#   })
-# }
-# shinyApp(ui=ui, server=server)
 
