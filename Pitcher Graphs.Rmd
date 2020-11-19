@@ -140,16 +140,6 @@ pitchers
 
 
 
-
-
-
-
-
-
-
-
-
-
 ```{r interactive graph }
 
 
@@ -205,10 +195,11 @@ figure() %>%
 
 
 
-
+#install.packages("ggpointdensity")
+library(ggpointdensity)
 library(ggplot2)
 library(plotly) 
-p <- ggplot(pitchers, aes(on_base_percent, p_strikeout, colour=decade)) + geom_point()
+p <- ggplot(pitchers, aes(on_base_percent, p_strikeout, colour=decade))  
  ggplotly(p)
 
 
@@ -220,6 +211,50 @@ p <- ggplot(pitchers, aes(on_base_percent, p_strikeout, colour=decade)) + geom_p
 
 
 ```
+
+
+```{r scatterplot graph}
+
+#install.packages("WVPlots")
+#install.packages("GGally")
+library(WVPlots) 
+library(quanteda)
+library(GGally)
+library(tidyverse)
+
+pitchers <-  read_csv("stats.csv")
+pitchers <- tibble(pitchers)
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers[order(pitchers$player_age),]
+
+pitchers <- pitchers[order(pitchers$name),]
+
+pitchers <- pitchers %>% mutate(decade = (year %/% 10)*10)
+pitchers <- pitchers %>% mutate(sdecade = format(decade, digits = 4))
+colnames(pitchers)
+
+colnames(pitchers)[colnames(pitchers) == "player_age"] <- "Player Age"
+colnames(pitchers)[colnames(pitchers) == "p_strikeout"] <- "Strikeouts"
+colnames(pitchers)[colnames(pitchers) == "p_walk"] <- "Walks"
+colnames(pitchers)[colnames(pitchers) == "on_base_percent"] <- "OBP"
+pitchers
+
+ggpairs(pitchers, mapping = aes(color = sdecade, alpha=.6, legend.position = "left"), columns = c(4,14,15,20)) 
+
+ggsave(file="Crossplot Matrix.png", width=8, height=6, dpi=500)
+
+```
+
+
+
+
+
+
+
+
+
 
 
 
