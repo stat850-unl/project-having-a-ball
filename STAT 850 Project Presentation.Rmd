@@ -15,15 +15,110 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Slide with Bullets
 
-- Bullet 1
-- Bullet 2
-- Bullet 3
+- We originally wanted to set up a scouting report for every batter in the league, using some custom statistics derived from advanced batting statistics. We would then produce a heatmap and detailed scouting report of what sorts of pitches work on every batter, and where in the zone it worked. Gleefully, we set about finding our data.
+- Our data exists, but isn't cheap. Back to the drawing board.
+- Instead, we decided to see if we could predict the net number of wins a pitcher was worth based on his ERA (earned run average), OBP (Opponent On-base percentage), and whatever else could think of. We found a package called Lahman that would do the job.
 
 ## Slide with R Output
 
-```{r cars, echo = TRUE}
-summary(cars)
+-Here, we're going to look at how we selected and in some cases created the column data we needed.
+```{r regression echo=TRUE}
+library(aod)
+library(mgcv)
+library(ggplot2)
+#Here, we look at the relevant data from
+
+#Select columns from the Pitching dataset
+pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA, W, L)
+
+
+#Create a Net Wins column
+pitchers <- pitchers %>% mutate(NetWins = W-L)
+
+#Only keep rows where there is no missing data
+pitchers <- pitchers[complete.cases(pitchers),]
+
+#Normalize data so that coefficients are meaningful
+pitchers <- pitchers %>% mutate(normIPouts = (IPouts - mean(IPouts)) / sd(IPouts))
+pitchers <- pitchers %>% mutate(normBB = (BB - mean(BB)) / sd(BB))
+pitchers <- pitchers %>% mutate(normSO = (SO - mean(SO)) / sd(SO))
+pitchers <- pitchers %>% mutate(normBAOpp = (BAOpp - mean(BAOpp)) / sd(BAOpp))
+pitchers <- pitchers %>% mutate(normERA = (ERA - mean(ERA)) / sd(ERA))
 ```
+
+## Building linear model
+
+-Finally, we can build our model, as is accomplished below.
+
+```{r lm echo=FALSE}
+
+#Build Linear Model
+mylm <- lm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
+
+#Analyze Findings
+summary(mylm)
+summary(mylm)$r.squared 
+
+```
+
+## Building a Generalized Additive Model
+
+-That last model sucked. Let's try again with a better model.
+
+```{r gam echo=FALSE}
+
+#Note, these findings mean that our regression sucks. Trying a new regression.
+mygam <- gam(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
+summary(mygam)
+summary(mygam)$r.squared
+
+```
+
+##Building a Generalized Linear Model
+
+-That last model sucked too. Let's try another one--a generalized linear model.
+```{r glm echo=FALSE}
+
+#Note, these results also suck. Trying a new regression.
+myglm <- glm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, family = gaussian, data = pitchers)
+summary(myglm)
+summary(myglm)$r.squared
+```
+
+## Building models
+
+-Wow, that went well. Let's see if we can figure out any kind of a model that works at all--even ones that are nonlinear and completely unintuitive to normal humans. Gleefully, that's what we did.
+
+-Put on that infinity glove and snap your fingers
+
+```{r interaction echo=FALSE}
+
+#Note, all of these results still suck. Going to try an interaction model with everything
+
+#Select columns from the Pitching dataset
+pitchers <- tibble(Pitching)
+
+#Create a Net Wins column
+pitchers <- pitchers %>% mutate(NetWins = W-L)
+
+#Only keep rows where there is no missing data
+pitchers <- pitchers[complete.cases(pitchers),]
+
+
+
+mylm <- lm(NetWins ~ IPouts*HR*BB*SO*BAOpp*ERA*IBB*WP*HBP*BK*BFP*GIDP, data = pitchers)
+
+#Analyze Findings
+#summary(mylm)
+summary(mylm)$r.squared 
+```
+
+## After the MCU
+
+-Well look at that, we snapped our fingers and explained just over half of the variation. Excellent work team!
+
+-Clearly, this isn't going as well as it might've. Let's just see if we can explain pitcher success using advanced pitching metrics.
+
 
 ## Slide with Plot
 
