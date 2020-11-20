@@ -125,9 +125,11 @@ pitchers <- pitchers[complete.cases(pitchers),]
 
 ## After the MCU
 
-- Well look at that, we snapped our fingers and explained just over half of the variation. Excellent work team!
+- Well look at that, we snapped our fingers and explained just over half of the variation. Excellent work team! 
 
-- Clearly, this isn't going as well as it might've. We decided to look at a crossplot of what sorts of correlation exists.
+- Just kidding, we need to be able to do a lot better than this.
+
+- Clearly, this isn't going as well as it might've. Let's make some graphs and see what we can find before we build another model. 
 
 ## Crossplot
 
@@ -195,15 +197,131 @@ figure(width = 800, height = 500) %>%
   ly_points(x = OBP, y = Strikeouts, color = Decade,
   data = pitchers, hover = list(Name, Year, OBP, Strikeouts))
 
+library(ggplot2)
+library(plotly) 
+p <- ggplot(pitchers, aes(OBP, Walks, colour=Decade)) + geom_point()
+ggplotly(p)
+
 ```
 
+## Another interactive graph
+
+```{r}
+figure(width = 800, height = 500) %>%
+  ly_points(x = OBP, y = Walks, color = Decade,
+  data = pitchers, hover = list(Name, Year, OBP, Strikeouts))
+```
+
+## Another interactive graph
+
+```{r}
+figure(width = 800, height = 500) %>%
+  ly_points(x = Strikeouts, y = Walks, color = Decade,
+  data = pitchers, hover = list(Name, Year, OBP, Strikeouts))
+```
 
 ## Advanced pitching metrics
 
+- We're going to look at projecting OBP and Wins using some advanced metrics.
 
-## Slide with Plot
+## Advanced pitching code
+```{r include = FALSE}
+advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
+advancedPitchers <- tibble(advancedPitchers)
+advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
 
-```{r pressure}
-plot(pressure)
+advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
+
+advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]
+```
+
+
+## Fastball speed 
+```{r}
+ggplot(data = advancedPitchers) + geom_point(aes(x = fastball_avg_speed, y = on_base_percent, color= year))
+```
+
+## Hard Hit Percent
+```{r}
+ggplot(data = advancedPitchers) + geom_point(aes(x = hard_hit_percent, y = on_base_percent, color= year))
+```
+
+## Exit Velocity
+```{r}
+ggplot(data = advancedPitchers) + geom_point(aes(x = exit_velocity_avg, y = on_base_percent, color= year))
+```
+
+## Launch Angle
+```{r}
+ggplot(data = advancedPitchers) + geom_point(aes(x = launch_angle_avg, y = on_base_percent, color= year))
+```
+
+## Barrel Batted Rate
+```{r}
+ggplot(data = advancedPitchers) + geom_point(aes(x = barrel_batted_rate, y = on_base_percent, color= year))
+```
+
+## Spin Speed on Breaking Ball
+```{r}
+ggplot(data = advancedPitchers) + geom_point(aes(x = breaking_avg_spin, y = on_base_percent, color= year))
+```
+
+## Sweet Spot Percent
+```{r}
+ggplot(data = advancedPitchers) + geom_point(aes(x = sweet_spot_percent, y = on_base_percent, color= year))
+```
+
+## New Model
+
+- We did find some statistics that had positive trends. Are the significant enough to be useful? Let's find out!
+
+- mylm <- lm(on_base_percent ~  hard_hit_percent * sweet_spot_percent * exit_velocity_avg * year, data = advancedPitchers)
+```{r first model}
+mylm <- lm(on_base_percent ~  hard_hit_percent * sweet_spot_percent * exit_velocity_avg * year, data = advancedPitchers)
+
+#Analyze Findings
+summary(mylm)
+summary(mylm)$r.squared 
+```
+
+## So that sucked
+
+- let's try another model
+
+- Throw Everything on the pitching side.
+
+- on_base_percent ~  fastball_avg_speed * breaking_avg_speed * offspeed_avg_speed * fastball_avg_spin * breaking_avg_spin * offspeed_avg_spin
+
+- rsquared?
+```{r second}
+
+mylm <- lm(on_base_percent ~  fastball_avg_speed * breaking_avg_speed * offspeed_avg_speed * fastball_avg_spin * breaking_avg_spin * offspeed_avg_spin, data = advancedPitchers)
+
+#Analyze Findings
+summary(mylm)$r.squared 
+```
+## So that still sucked
+
+- Let's try again
+
+```{r Third model}
+#Let's explore another model idea using advanced metrics for hitters
+mylm <- lm(on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_percent * sweet_spot_percent * barrel_batted_rate * solidcontact_percent,  data = advancedPitchers)
+
+#Analyze Findings
+summary(mylm)$r.squared 
+
+```
+## Baseball is hard
+
+Why are we having so much trouble?
+
+## Concluding graph
+
+```{r Conclusion}
+ggplot(advancedPitchers, aes(x=year, y=on_base_percent, group = year)) +
+  geom_boxplot()
+
+
 ```
 
