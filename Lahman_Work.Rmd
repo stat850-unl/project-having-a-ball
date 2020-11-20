@@ -140,7 +140,11 @@ summary(mylm)$r.squared
 
 
 
+```{r}
 
+data(Pitching)
+
+```
 
 
 
