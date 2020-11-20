@@ -148,11 +148,19 @@ pitchers <- pitchers[complete.cases(pitchers),]
 
 
 
-mylm <- lm(NetWins ~ IPouts*HR*BB*SO*BAOpp*ERA*IBB*WP*HBP*BK*BFP*GIDP, data = pitchers)
+#mylm <- lm(NetWins ~ IPouts*HR*BB*SO*BAOpp*ERA*IBB*WP*HBP*BK*BFP*GIDP, data = pitchers)
 
 #Analyze Findings
 #summary(mylm)
-summary(mylm)$r.squared 
+#summary(mylm)$r.squared 
+```
+
+
+## Infinite Power
+
+
+```{r, echo=FALSE, message=FALSE, error=FALSE, out.width='100%'}
+knitr::include_graphics('./R2.png')
 ```
 
 ## After the MCU
