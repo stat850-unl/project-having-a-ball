@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ## Beginning Research
 
 - Here, we're going to look at how we selected and in some cases created the column data we needed.
-```{r error=FALSE, warning=FALSE, message=FALSE}
+```{r error=FALSE, message=FALSE, warning=FALSE, echo=FALSE}
 library(aod)
 library(mgcv)
 library(ggplot2)
@@ -30,6 +30,8 @@ library(dplyr)
 library(rbokeh)
 library(quanteda)
 library(Lahman)
+library(DT)
+library(shiny)
 ```
 
 # Select columns from the Pitching dataset
@@ -250,11 +252,11 @@ advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name
 
 advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]
 ```
-advancedPitchers <- read_csv("AdvancedPitcherMetrics.csv")
-advancedPitchers <- tibble(advancedPitchers)
-advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
-advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
-advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]
+advancedPitchers <- read_csv("AdvancedPitcherMetrics.csv")  
+advancedPitchers <- tibble(advancedPitchers)  
+advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))  
+advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))  
+advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]  
 
 ## Fastball speed 
 ```{r}
@@ -351,8 +353,43 @@ ggplot(advancedPitchers, aes(x=year, y=on_base_percent, group = year)) +
 
 ## What did we find out?
 Projecting pitching success in baseball is very unpredictable. To further support this argument consider Jacob deGrom's cy young winning year in 2018 compared to Bob Welch's Cy young winning year in 1990.
+
+## Examples of two men: Bob Welch
+
+```{r Welch, echo=FALSE, out.width='100%'}
+knitr::include_graphics('./Welch photo.JPG')
+```
+```{r Welch info, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
+TwoPitchers <-  read_csv("Welchtable.csv")
+TwoPitchers <- select(tibble(TwoPitchers), Year, ERA, W, L, IP, BB, SO, Awards)
+Welch <- filter(TwoPitchers, Year == "1990")
+OBP<- c(.302)
+Welch <-cbind(Welch, OBP)
+df2 = Welch[,c(1,2,9,3:8)]
+df2
+```
+
+## Examples of two men: deGrom
+
+```{r deGrom, echo=FALSE, warning=FALSE, message=FALSE, out.width='100%'}
+knitr::include_graphics('./deGrom.JPG')
+```
+```{r deGrom info, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
+TwoPitchers <-  read_csv("deGromTable.csv")
+TwoPitchers <- select(tibble(TwoPitchers), Year, ERA, W, L, IP, BB, SO, Awards)
+deGrom <- filter(TwoPitchers, Year == "2018")
+OBP<- c(.243)
+deGrom <-cbind(deGrom, OBP)
+df2 = deGrom[,c(1,2,9,3:8)]
+df2
+```
+
 ```{r Final Thoughts}
 ##show both tables.
+TwoPitchers <-  read_csv("Welchtable.csv")
+TwoPitchers <- select(tibble(TwoPitchers), Year, ERA, W, L, IP, BB, SO, Awards)
+TwoPitchers
+
 
 ```
 ## Where can we go from here?
