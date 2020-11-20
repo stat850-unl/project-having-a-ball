@@ -32,7 +32,7 @@ library(quanteda)
 library(Lahman)
 ```
 
-```{r echo=TRUE}
+```{r error=FALSE, echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 #Here, we look at the relevant data from Lahman
 
 #Select columns from the Pitching dataset
@@ -57,38 +57,48 @@ pitchers <- pitchers %>% mutate(normERA = (ERA - mean(ERA)) / sd(ERA))
 
 -Finally, we can build our model, as is accomplished below.
 
-```{r lm, echo=TRUE}
+rsquared:
+```{r lm, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
 
 #Build Linear Model
 mylm <- lm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
 
 #Analyze Findings
-summary(mylm)
-summary(mylm)$r.squared 
+x<-summary(mylm)
+x$r.squared 
 
 ```
+ 
+ 
+ 
+## Building a Generalized Additive Model  
 
-## Building a Generalized Additive Model
+- That last model sucked. Let's try again with a better model.
 
--That last model sucked. Let's try again with a better model.
+mygam <- gam(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
 
-```{r gam, include=TRUE}
+rsquared:
+```{r gam, error=FALSE, message=FALSE}
 
 #Note, these findings mean that our regression sucks. Trying a new regression.
 mygam <- gam(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
-summary(mygam)
+#summary(mygam)
 summary(mygam)$r.squared
 
 ```
 
-##Building a Generalized Linear Model
+## Building a Generalized Linear Model
 
--That last model sucked too. Let's try another one--a generalized linear model.
-```{r glm, include=TRUE}
+- That last model sucked too. Let's try another one--a generalized linear model.
+
+myglm <- glm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, family = gaussian, data = pitchers)
+
+rsquared
+```{r glm, error=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
 #Note, these results also suck. Trying a new regression.
 myglm <- glm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, family = gaussian, data = pitchers)
-summary(myglm)
+#summary(myglm)
 summary(myglm)$r.squared
 ```
 
@@ -100,7 +110,7 @@ summary(myglm)$r.squared
 
 -Put on that infinity glove and snap your fingers
 
-```{r interaction, include=TRUE}
+```{r interaction, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
 
 #Note, all of these results still suck. Going to try an interaction model with everything
 
@@ -195,11 +205,6 @@ pitchers <- pitchers %>% mutate(Decade = format(decade, digits = 4))
 figure(width = 800, height = 500) %>%
   ly_points(x = OBP, y = Strikeouts, color = Decade,
   data = pitchers, hover = list(Name, Year, OBP, Strikeouts))
-
-library(ggplot2)
-library(plotly) 
-p <- ggplot(pitchers, aes(OBP, Walks, colour=Decade)) + geom_point()
-ggplotly(p)
 
 ```
 
