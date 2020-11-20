@@ -1,4 +1,4 @@
-To an outside person who wouldn't know the tiny details about baseball, one might think that pitcher success is stricly based off of wins. Let's explore what kinds of things would factor into projecting wins in a season. 
+To an outside person who wouldn't know the tiny details about baseball, one might think that pitcher success is strictly based off of wins. Let's explore what kinds of things would factor into projecting wins in a season. 
 ```{r Non-Sports Background}
 library(ggplot2)
 #Read in data

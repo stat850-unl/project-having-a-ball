@@ -9,17 +9,16 @@ output: ioslides_presentation
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## Baseball
 
 
 
-## Slide with Bullets
+## Original Premise
 
 - We originally wanted to set up a scouting report for every batter in the league, using some custom statistics derived from advanced batting statistics. We would then produce a heatmap and detailed scouting report of what sorts of pitches work on every batter, and where in the zone it worked. Gleefully, we set about finding our data.
 - Our data exists, but isn't cheap. Back to the drawing board.
 - Instead, we decided to see if we could predict the net number of wins a pitcher was worth based on his ERA (earned run average), OBP (Opponent On-base percentage), and whatever else could think of. We found a package called Lahman that would do the job.
 
-## Slide with R Output
+## Beginning Research
 
 - Here, we're going to look at how we selected and in some cases created the column data we needed.
 ```{r error=FALSE, warning=FALSE, message=FALSE}
@@ -224,7 +223,6 @@ figure(width = 800, height = 500) %>%
 
 - We're going to look at projecting OBP and Wins using some advanced metrics.
 
-## Advanced pitching code
 ```{r include = FALSE}
 advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
 advancedPitchers <- tibble(advancedPitchers)
@@ -302,7 +300,7 @@ summary(mylm)$r.squared
 ```
 ## So that still sucked
 
-- Let's try again
+- Let's try again. Throw everything on the hitting side.
 
 ```{r Third model}
 #Let's explore another model idea using advanced metrics for hitters
@@ -324,4 +322,18 @@ ggplot(advancedPitchers, aes(x=year, y=on_base_percent, group = year)) +
 
 
 ```
+
+
+##What did we find out?
+Projecting pitching success in baseball is very unpredictable. To further support this argument consider Jacob deGrom's cy young winning year in 2018 compared to Bob Welch's Cy young winning year in 1990.
+```{r Final Thoughts}
+##show both tables.
+
+```
+##Where can we go from here?
+After deliberation and talking more about why we couldn't find anything useful in our research, we concluded that there are too many outside variables that can factor in to player success. Team performance is the most essential variable we could think of. deGrom's Mets finished with 77 wins and was near the bottom of the MLB in many major ofensive categories. Welch's A's were the best team in baseball and finished with 103 wins and was at the top of many offensive categories. Potential for a new research topic would be the idea a new statistic called the adjusted win statistic that measures pitcher worth while being backed by the league average offense and defense. This is just one thing that could be explored in the future!
+
+#Thank You!
+
+
 
