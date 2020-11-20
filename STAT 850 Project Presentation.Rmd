@@ -30,9 +30,6 @@ library(dplyr)
 library(rbokeh)
 library(quanteda)
 library(Lahman)
-library(DT)
-library(shiny)
-
 ```
 
 - Select columns from the Pitching dataset  
@@ -242,6 +239,53 @@ figure(width = 800, height = 500) %>%
 ## OBP x Walks
 
 ```{r, error=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+#Read in data, cast as tibble
+pitchers <-  read_csv("stats.csv")
+pitchers <- tibble(pitchers)
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers[order(pitchers$player_age),]
+
+pitchers <- pitchers[order(pitchers$name),]
+
+colnames(pitchers)[colnames(pitchers) == "player_age"] <- "Player Age"
+colnames(pitchers)[colnames(pitchers) == "name"] <- "Name"
+colnames(pitchers)[colnames(pitchers) == "year"] <- "Year"
+colnames(pitchers)[colnames(pitchers) == "p_strikeout"] <- "Strikeouts"
+colnames(pitchers)[colnames(pitchers) == "p_walk"] <- "Walks"
+colnames(pitchers)[colnames(pitchers) == "on_base_percent"] <- "OBP"
+
+
+#Add an empty column that we can populate in the next chunk
+emptycolumn <- c("Years_In_Pitching")
+pitchers[ , emptycolumn] <- NA
+
+
+pitchers$Years_In_Pitching[1]<-1
+
+i<-2
+while (i < length(pitchers$Years_In_Pitching)){
+  if(i==1){
+    pitchers$Years_In_Pitching[i]=1
+    i=i+1
+    }
+  else if(pitchers$Name[i]==pitchers$Name[i-1]){
+    pitchers$Years_In_Pitching[i]=pitchers$Years_In_Pitching[i-1]+1
+    i=i+1
+    }
+  else if(pitchers$Name[i]!=pitchers$Name[i-1]){
+    pitchers$Years_In_Pitching[i] = 1
+    i=i+1
+  }
+}
+
+pitchers <- pitchers %>% mutate(decade = (Year %/% 10)*10)
+pitchers <- pitchers %>% mutate(Decade = format(decade, digits = 4))
+
+
 figure(width = 800, height = 500) %>%
   ly_points(x = OBP, y = Walks, color = Decade,
   data = pitchers, hover = list(Name, Year, OBP, Strikeouts))
@@ -250,6 +294,53 @@ figure(width = 800, height = 500) %>%
 ## Strikeouts x Walks
 
 ```{r, error=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+#Read in data, cast as tibble
+pitchers <-  read_csv("stats.csv")
+pitchers <- tibble(pitchers)
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers[order(pitchers$player_age),]
+
+pitchers <- pitchers[order(pitchers$name),]
+
+colnames(pitchers)[colnames(pitchers) == "player_age"] <- "Player Age"
+colnames(pitchers)[colnames(pitchers) == "name"] <- "Name"
+colnames(pitchers)[colnames(pitchers) == "year"] <- "Year"
+colnames(pitchers)[colnames(pitchers) == "p_strikeout"] <- "Strikeouts"
+colnames(pitchers)[colnames(pitchers) == "p_walk"] <- "Walks"
+colnames(pitchers)[colnames(pitchers) == "on_base_percent"] <- "OBP"
+
+
+#Add an empty column that we can populate in the next chunk
+emptycolumn <- c("Years_In_Pitching")
+pitchers[ , emptycolumn] <- NA
+
+
+pitchers$Years_In_Pitching[1]<-1
+
+i<-2
+while (i < length(pitchers$Years_In_Pitching)){
+  if(i==1){
+    pitchers$Years_In_Pitching[i]=1
+    i=i+1
+    }
+  else if(pitchers$Name[i]==pitchers$Name[i-1]){
+    pitchers$Years_In_Pitching[i]=pitchers$Years_In_Pitching[i-1]+1
+    i=i+1
+    }
+  else if(pitchers$Name[i]!=pitchers$Name[i-1]){
+    pitchers$Years_In_Pitching[i] = 1
+    i=i+1
+  }
+}
+
+pitchers <- pitchers %>% mutate(decade = (Year %/% 10)*10)
+pitchers <- pitchers %>% mutate(Decade = format(decade, digits = 4))
+
+
 figure(width = 800, height = 500) %>%
   ly_points(x = Strikeouts, y = Walks, color = Decade,
   data = pitchers, hover = list(Name, Year, OBP, Strikeouts))
@@ -268,7 +359,7 @@ advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name
 
 advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]
 ```
-
+- We will use average fastball speed, hard hit percent, exit velocity average, launch angle average, barrel batted rate, spin speed on breaking ball, and sweet spot percent to predict on base percent.
 
 ## Fastball Speed 
 ```{r}
