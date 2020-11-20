@@ -395,7 +395,7 @@ TwoPitchers
 ## Where can we go from here?
 After deliberation and talking more about why we couldn't find anything useful in our research, we concluded that there are too many outside variables that can factor in to player success. Team performance is the most essential variable we could think of. deGrom's Mets finished with 77 wins and was near the bottom of the MLB in many major ofensive categories. Welch's A's were the best team in baseball and finished with 103 wins and was at the top of many offensive categories. Potential for a new research topic would be the idea a new statistic called the adjusted win statistic that measures pitcher worth while being backed by the league average offense and defense. This is just one thing that could be explored in the future!
 
-# Thank You!
+## Thank You!
 
 
 
