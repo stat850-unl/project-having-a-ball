@@ -223,7 +223,7 @@ figure(width = 800, height = 500) %>%
 
 - We're going to look at projecting OBP and Wins using some advanced metrics.
 
-```{r include = FALSE}
+```{r include = TRUE}
 advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
 advancedPitchers <- tibble(advancedPitchers)
 advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
