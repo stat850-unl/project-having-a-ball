@@ -243,7 +243,7 @@ pitchers
 
 ggpairs(pitchers, mapping = aes(color = sdecade, alpha=.6, legend.position = "left"), columns = c(4,14,15,20)) 
 
-ggsave(file="Crossplot Matrix.png", width=8, height=6, dpi=500)
+ggsave(file="Crossplot Matrix.png", width=8, height=5, dpi=500)
 
 ```
 

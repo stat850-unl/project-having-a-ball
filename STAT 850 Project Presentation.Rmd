@@ -250,7 +250,11 @@ advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name
 
 advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]
 ```
-
+advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
+advancedPitchers <- tibble(advancedPitchers)
+advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
+advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
+advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]
 
 ## Fastball speed 
 ```{r}
