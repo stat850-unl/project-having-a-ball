@@ -32,6 +32,19 @@ library(quanteda)
 library(Lahman)
 ```
 
+# Select columns from the Pitching dataset
+pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA, W, L)
+# Create a Net Wins column
+pitchers <- pitchers %>% mutate(NetWins = W-L)
+# Only keep rows where there is no missing data
+pitchers <- pitchers[complete.cases(pitchers),]
+# Normalize data so that coefficients are meaningful
+pitchers <- pitchers %>% mutate(normIPouts = (IPouts - mean(IPouts)) / sd(IPouts))
+pitchers <- pitchers %>% mutate(normBB = (BB - mean(BB)) / sd(BB))
+pitchers <- pitchers %>% mutate(normSO = (SO - mean(SO)) / sd(SO))
+pitchers <- pitchers %>% mutate(normBAOpp = (BAOpp - mean(BAOpp)) / sd(BAOpp))
+pitchers <- pitchers %>% mutate(normERA = (ERA - mean(ERA)) / sd(ERA))
+
 ```{r error=FALSE, echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 #Here, we look at the relevant data from Lahman
 
@@ -208,17 +221,17 @@ figure(width = 800, height = 500) %>%
 
 ```
 
-## Another interactive graph
+## OBP x Walks
 
-```{r}
+```{r, error=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 figure(width = 800, height = 500) %>%
   ly_points(x = OBP, y = Walks, color = Decade,
   data = pitchers, hover = list(Name, Year, OBP, Strikeouts))
 ```
 
-## Another interactive graph
+## Strikeouts x Walks
 
-```{r}
+```{r, error=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 figure(width = 800, height = 500) %>%
   ly_points(x = Strikeouts, y = Walks, color = Decade,
   data = pitchers, hover = list(Name, Year, OBP, Strikeouts))
@@ -228,7 +241,7 @@ figure(width = 800, height = 500) %>%
 
 - We're going to look at projecting OBP and Wins using some advanced metrics.
 
-```{r include = TRUE}
+```{r error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
 advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
 advancedPitchers <- tibble(advancedPitchers)
 advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
@@ -265,7 +278,7 @@ ggplot(data = advancedPitchers) + geom_point(aes(x = barrel_batted_rate, y = on_
 ```
 
 ## Spin Speed on Breaking Ball
-```{r}
+```{r error=FALSE, message=FALSE, warning=FALSE, include=TRUE }
 ggplot(data = advancedPitchers) + geom_point(aes(x = breaking_avg_spin, y = on_base_percent, color= year))
 ```
 
@@ -279,11 +292,13 @@ ggplot(data = advancedPitchers) + geom_point(aes(x = sweet_spot_percent, y = on_
 - We did find some statistics that had positive trends. Are the significant enough to be useful? Let's find out!
 
 - mylm <- lm(on_base_percent ~  hard_hit_percent * sweet_spot_percent * exit_velocity_avg * year, data = advancedPitchers)
-```{r first model}
+
+- rsquared?
+```{r first model, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
 mylm <- lm(on_base_percent ~  hard_hit_percent * sweet_spot_percent * exit_velocity_avg * year, data = advancedPitchers)
 
 #Analyze Findings
-summary(mylm)
+#summary(mylm)
 summary(mylm)$r.squared 
 ```
 
@@ -296,7 +311,7 @@ summary(mylm)$r.squared
 - on_base_percent ~  fastball_avg_speed * breaking_avg_speed * offspeed_avg_speed * fastball_avg_spin * breaking_avg_spin * offspeed_avg_spin
 
 - rsquared?
-```{r second}
+```{r second, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
 
 mylm <- lm(on_base_percent ~  fastball_avg_speed * breaking_avg_speed * offspeed_avg_speed * fastball_avg_spin * breaking_avg_spin * offspeed_avg_spin, data = advancedPitchers)
 
@@ -306,8 +321,9 @@ summary(mylm)$r.squared
 ## So that still sucked
 
 - Let's try again. Throw everything on the hitting side.
-
-```{r Third model}
+- mylm <- lm(on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_percent * sweet_spot_percent * barrel_batted_rate * solidcontact_percent,  data = advancedPitchers)
+- rsquared?
+```{r Third model, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
 #Let's explore another model idea using advanced metrics for hitters
 mylm <- lm(on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_percent * sweet_spot_percent * barrel_batted_rate * solidcontact_percent,  data = advancedPitchers)
 
@@ -329,16 +345,16 @@ ggplot(advancedPitchers, aes(x=year, y=on_base_percent, group = year)) +
 ```
 
 
-##What did we find out?
+## What did we find out?
 Projecting pitching success in baseball is very unpredictable. To further support this argument consider Jacob deGrom's cy young winning year in 2018 compared to Bob Welch's Cy young winning year in 1990.
 ```{r Final Thoughts}
 ##show both tables.
 
 ```
-##Where can we go from here?
+## Where can we go from here?
 After deliberation and talking more about why we couldn't find anything useful in our research, we concluded that there are too many outside variables that can factor in to player success. Team performance is the most essential variable we could think of. deGrom's Mets finished with 77 wins and was near the bottom of the MLB in many major ofensive categories. Welch's A's were the best team in baseball and finished with 103 wins and was at the top of many offensive categories. Potential for a new research topic would be the idea a new statistic called the adjusted win statistic that measures pitcher worth while being backed by the league average offense and defense. This is just one thing that could be explored in the future!
 
-#Thank You!
+# Thank You!
 
 
 
