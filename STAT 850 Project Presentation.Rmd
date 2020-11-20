@@ -72,11 +72,13 @@ pitchers <- pitchers %>% mutate(normBAOpp = (BAOpp - mean(BAOpp)) / sd(BAOpp))
 pitchers <- pitchers %>% mutate(normERA = (ERA - mean(ERA)) / sd(ERA))
 ```
 
-## Building linear model
+## Building Linear Model
 
--Finally, we can build our model, as is accomplished below.
+- Finally, we can build our model, as is accomplished below.
 
-rsquared:
+NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers 
+
+Rsquared:
 ```{r lm, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
 
 #Build Linear Model
@@ -94,9 +96,9 @@ x$r.squared
 
 - That last model sucked. Let's try again with a better model.
 
-mygam <- gam(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
+NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA
 
-rsquared:
+Rsquared:
 ```{r gam, error=FALSE, message=FALSE}
 
 #Note, these findings mean that our regression sucks. Trying a new regression.
@@ -110,9 +112,9 @@ summary(mygam)$r.squared
 
 - That last model sucked too. Let's try another one--a generalized linear model.
 
-myglm <- glm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, family = gaussian, data = pitchers)
+NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, family = gaussian
 
-rsquared
+Rsquared:
 ```{r glm, error=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
 #Note, these results also suck. Trying a new regression.
@@ -121,13 +123,13 @@ myglm <- glm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, famil
 summary(myglm)$r.squared
 ```
 
-## Building models
+## Infinite Power
 
 - Wow, that went well. Let's see if we can figure out any kind of a model that works at all--even ones that are nonlinear and completely unintuitive to normal humans. 
 
 - We're going to throw everything at it. We are inevitable.
 
-- NetWins ~ IPouts * HR * BB * SO * BAOp p* ERA * IBB * WP * HBP * BK * BFP * GIDP
+- NetWins ~ IPouts * HR * BB * SO * BAOpp * ERA * IBB * WP * HBP * BK * BFP * GIDP
 
 - Put on that infinity glove and snap your fingers
 
@@ -258,11 +260,7 @@ advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name
 
 advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]
 ```
- 
-advancedPitchers  
-%>% mutate(name=paste(first_name, last_name))   
 
-advancedPitchers[order(advancedPitchers$name),]  
 
 ## Fastball Speed 
 ```{r}
@@ -305,7 +303,7 @@ ggplot(data = advancedPitchers) + geom_point(aes(x = sweet_spot_percent, y = on_
 
 - on_base_percent ~  hard_hit_percent * sweet_spot_percent * exit_velocity_avg * year
 
-- Rsquared?
+- Rsquared:
 ```{r first model, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
 mylm <- lm(on_base_percent ~  hard_hit_percent * sweet_spot_percent * exit_velocity_avg * year, data = advancedPitchers)
 
@@ -322,7 +320,7 @@ summary(mylm)$r.squared
 
 - on_base_percent ~  fastball_avg_speed * breaking_avg_speed * offspeed_avg_speed * fastball_avg_spin * breaking_avg_spin * offspeed_avg_spin
 
-- Rsquared?
+- Rsquared:
 ```{r second, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
 
 mylm <- lm(on_base_percent ~  fastball_avg_speed * breaking_avg_speed * offspeed_avg_speed * fastball_avg_spin * breaking_avg_spin * offspeed_avg_spin, data = advancedPitchers)
@@ -335,7 +333,7 @@ summary(mylm)$r.squared
 - Let's try again. Throw everything on the hitting side.
 - on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_percent * sweet_spot_percent * barrel_batted_rate * solidcontact_percent  
 
-- Rsquared?
+- Rsquared:
 ```{r Third model, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
 #Let's explore another model idea using advanced metrics for hitters
 mylm <- lm(on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_percent * sweet_spot_percent * barrel_batted_rate * solidcontact_percent,  data = advancedPitchers)
