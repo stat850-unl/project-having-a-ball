@@ -680,6 +680,8 @@ ggplot(advancedPitchers, aes(x=year, y=on_base_percent, group = year)) +
 ## What did we find out?
 Projecting pitching success in baseball is very unpredictable. To further support this argument consider Jacob deGrom's Cy Young winning year in 2018 compared to Bob Welch's Cy Young winning year in 1990.
 
+It is very clear to see that Bob welch was a successful pitcher in the early 1990's. However, with being familiar with the game of baseball it was clear to see that Welch's statistical output may be a bit deflated for a Cy young winner. 27 wins and a 2.98 ERA is definitely nothing to scoff at, but at some point, we need to factor in team performance into the pitching metric. In 1990, Welch's team, the Oakland Athletics finished with a record do 103-59--good for first in all of the MLB. It was only fitting for the best offensive team in baseball to win that many games, and subsequently, earn many wins for their stellar pitchers. Looking further into his performance, he recorded very few strikeouts and carried a very poor strikeout/walk ratio for a Cy Young Winner. Now days, Cy Young winners usually earn over 300 strikeouts, very low walks, and high strikeout to walk ratios. By no means did Welch have a poor year, but team performance was a large factor in his success during the 1990 season. 
+
 ## Examples Of Incongruities: Bob Welch
 
 ```{r Welch, echo=FALSE, out.width='100%'}
@@ -696,7 +698,7 @@ df2
 ```
 
 ## Examples of Incongruities: Jacob deGrom
-
+Jacob deGrom may have been on the complete opposite side often spectrum. While he did win the Cy Young in 2018, his win/loss record does not show just how good he was. Coupled with an amazing 1.70 ERA as well as a stellar 5.8 strikeout/walk ratio, deGrom was more than deserving of the award. Team performance had a huge impact on him as well. Most Cy Young winners win in the upper teens and sometimes over 20 games during the regular season. deGrom's 10 win Cy Young campaign was an anomaly and can be traced back to how his team performed. The 77 wins the Mets accumulated, was second to last in their division and ranked towards the bottom in every offensive category. To properly project pitcher success, team performance is a variable that would be imperative to the model--as deGrom would attest to: 
 ```{r deGrom, echo=FALSE, warning=FALSE, message=FALSE, out.width='100%'}
 knitr::include_graphics('Images/deGrom.JPG')
 ```
