@@ -42,6 +42,9 @@ In our project, we did everything we could to find the predictive power of all o
   
 ## Building a Model 
 
+> You don't need to show the code. Describe what you did in words, instead. :)
+
+
 We began by taking the variables we mentioned before and normalizing them so that our regression would have meaningful results. It was accomplished with the following code:
   
 *#Select columns from the Pitching dataset*  
@@ -94,6 +97,8 @@ summary(mylm)$r.squared
 ```
 
 However, we quickly realized that our regression was terrible. Supposing that perhaps a more advanced regression technique was required, we looked at a generalized additive model and a general linear model. The code and rsquared values for these regressions are contained below:
+
+> Y'all are getting fancy!
    
 mygam <- gam(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)  
 summary(mygam)$r.squared  
@@ -113,6 +118,8 @@ summary(myglm)$r.squared
 ```
 
 Obviously an Rsquared value of NULL isn't very good. But can we do any better?
+
+> An R^2 value of null is... interesting and maybe indicative of something going wrong. I'm not debugging your model here, but you also don't have to fit a model for this project to be successful. 
 
 ## Infinite Power
 
@@ -673,6 +680,8 @@ It is is easy to see that from the above models, our idea of trying to predict p
 Baseball is an interesting game in the fact that it is such a big team game. No other sport contains the system that baseball implements i.e. the minor leagues where major league teams hold power over hundreds of other players aside from the players that reside on their major league team. Without going into too much detail, the way a pitcher's team performs around him can heavily inflate a lot of variables that we were using. If a pitcher pitches for a poor team, he could hold a 10-9 record but still win the Cy Young award (The award given to the best pitcher in all of the MLB). 
 After deliberation and talking more about why we couldn't find anything useful in our research, we concluded that there are too many outside variables that can factor in to player success. Team performance is the most essential variable we could think of. Potential for a new research topic would be the idea a new statistic called the adjusted win statistic that measures pitcher worth while being backed by the league average offense and defense.  
 
+> I really like the narrative in your report! :) It looks good
+> I decided to provide a bit of feedback because I know you didn't get feedback from me a couple of weeks ago because things are nuts :)
 
 ## Group Members
 Michael Grantham  Jayden Stack
