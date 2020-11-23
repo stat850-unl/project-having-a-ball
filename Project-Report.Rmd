@@ -2,6 +2,7 @@
 title: "850 Project Report"
 author: "Michael Grantham, Jayden Stack"
 date: "11/22/2020"
+runtime: shiny
 output: html_document
 ---
 
@@ -106,7 +107,7 @@ summary(mygam)$r.squared
   
 ```{r gam, echo = FALSE}
 mygam <- gam(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
-summary(mygam)$r.squared
+rsq <- summary(mygam)$r.squared
 ```
   
   
@@ -120,6 +121,8 @@ summary(myglm)$r.squared
 Obviously an Rsquared value of NULL isn't very good. But can we do any better?
 
 > An R^2 value of null is... interesting and maybe indicative of something going wrong. I'm not debugging your model here, but you also don't have to fit a model for this project to be successful. 
+
+> But note that R^2 doesn't mean the same thing for glms, and it's not really accurate, so... you should be able to find a better way to analyze the data...
 
 ## Infinite Power
 
@@ -135,7 +138,9 @@ pitchers <- pitchers %>% mutate(NetWins = W-L)
 pitchers <- pitchers[complete.cases(pitchers),]  
   
 mylm <- lm(NetWins ~ IPouts * HR * BB * SO * BAOpp * ERA *IBB * WP * HBP * BK * BFP * GIDP, data = pitchers)  
-  
+
+> I don't care how much data you have, fitting a full interaction model is too much. Be strategic. Use stepwise regression... or just plot your data and add terms related to what you see!
+
 *#Analyze Findings*
 summary(mylm)$r.squared 
 
@@ -157,6 +162,8 @@ pitchers <- pitchers[complete.cases(pitchers),]
 #summary(mylm)$r.squared 
 
 ```
+
+> Or you could just say "The $R^2$ from the glm was `r rsq`"
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, out.width='100%'}
 #Instead, we've included a giant picture of the Rsquared value
@@ -380,7 +387,7 @@ shinyApp(ui = ui, server = server)
 
 In order to find what other statistics might be of assistance, we put together a crossplot to examine the correlation among the variables.  
 
-```{r scatterplot graph, echo=FALSE, message=FALSE, warning=FALSE}
+```{r scatterplot-graph, echo=FALSE, message=FALSE, warning=FALSE}
 pitchers <-  read_csv("CSVs/stats.csv")
 pitchers <- tibble(pitchers)
 
@@ -393,6 +400,7 @@ pitchers <- pitchers[order(pitchers$name),]
 pitchers <- pitchers %>% mutate(decade = (year %/% 10)*10)
 pitchers <- pitchers %>% mutate(sdecade = format(decade, digits = 4))
 
+# rename() is a nice tidy function for this... :)
 colnames(pitchers)[colnames(pitchers) == "player_age"] <- "Player Age"
 colnames(pitchers)[colnames(pitchers) == "p_strikeout"] <- "Strikeouts"
 colnames(pitchers)[colnames(pitchers) == "p_walk"] <- "Walks"
@@ -400,7 +408,7 @@ colnames(pitchers)[colnames(pitchers) == "on_base_percent"] <- "OBP"
 
 ggpairs(pitchers, mapping = aes(color = sdecade, alpha=.6, legend.position = "left"), columns = c(4,14,15,20)) 
 
-ggsave(file="Crossplot Matrix.png", width=8, height=5, dpi=500)
+# ggsave(file="Crossplot Matrix.png", width=8, height=5, dpi=500)
 
 ```
 
