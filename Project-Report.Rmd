@@ -1,6 +1,6 @@
 ---
 title: "850 Project Report"
-author: "Michael Grantham, Jayden Kass"
+author: "Michael Grantham, Jayden Stack"
 date: "11/22/2020"
 output: html_document
 ---
@@ -271,7 +271,7 @@ Clearly, our averaging of results was not masking a signal in the data--there si
 
 We had the tools to create an application that would assist in showing that our original hypothesis was, in fact, incorrect about pitcher performance according to point of career. We are able to select a player and corresponding year in which they were in the league. A bar chart will be rendered to resemble the selected player's OBP given up as they progress in their career.
 
-```{r shiny}
+```{r shiny, echo=FALSE, message=FALSE, warning=FALSE}
 #Read in data, cast as tibble
 pitchers <-  read_csv("stats.csv")
 pitchers <- tibble(pitchers)
@@ -574,27 +574,21 @@ With the development of numerous throwing programs and velocity being at the for
 
 To hopefully build a model using advanced metrics, we will develop some visuals to find relationships between these variables and OBP.
 
-*#We need to read in our new data*
-advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
-advancedPitchers <- tibble(advancedPitchers)
-advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
-
-advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
-
-advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]
+*#We need to read in our new data*  
+advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")  
+advancedPitchers <- tibble(advancedPitchers)  
+advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))  
+advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]  
 
 
 
 
-```{r Advanced Graphs}
+```{r Advanced Graphs, echo=FALSE, message=FALSE, warning=FALSE}
 library(ggplot2)
 
 advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
 advancedPitchers <- tibble(advancedPitchers)
 advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
-
-advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
-
 advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]
 
 ggplot(data = advancedPitchers) + geom_point(aes(x = fastball_avg_speed, y = on_base_percent, color= year))
@@ -615,41 +609,58 @@ ggplot(data = advancedPitchers) + geom_point(aes(x = year, y = on_base_percent, 
 
 
 ```
-We did find some statistics that had positive trends. Are the significant enough to be useful? Let's find out!
-```{r first model}
+  
+We did find some statistics that had positive trends. Are the significant enough to be useful? Let's find out!  
+  
+mylm <- lm(on_base_percent ~  hard_hit_percent * sweet_spot_percent * exit_velocity_avg * year, data = advancedPitchers)  
+  
+summary(mylm)$r.squared  
+
+```{r first model, echo=FALSE, message=FALSE, warning=FALSE}
 mylm <- lm(on_base_percent ~  hard_hit_percent * sweet_spot_percent * exit_velocity_avg * year, data = advancedPitchers)
 
 #Analyze Findings
-summary(mylm)
+#summary(mylm)
 summary(mylm)$r.squared 
 ```
-Let's throw Everything on the pitching side.
-```{r second}
+  
+Let's throw everything on the pitching side.  
+  
+mylm <- lm(on_base_percent ~  fastball_avg_speed * breaking_avg_speed * offspeed_avg_speed * fastball_avg_spin * breaking_avg_spin * offspeed_avg_spin, data = advancedPitchers)  
+  
+summary(mylm)$r.squared  
+
+```{r second, echo=FALSE, message=FALSE, warning=FALSE}
 
 mylm <- lm(on_base_percent ~  fastball_avg_speed * breaking_avg_speed * offspeed_avg_speed * fastball_avg_spin * breaking_avg_spin * offspeed_avg_spin, data = advancedPitchers)
 
 #Analyze Findings
-summary(mylm)
+#summary(mylm)
 summary(mylm)$r.squared 
 
 #These findings still don't really help us at all. Back to the drawing board.
 
 ```
-Let's throw everything on the hitting side.
+Let's throw everything on the hitting side.  
+  
+mylm <- lm(on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_percent * sweet_spot_percent * barrel_batted_rate * solidcontact_percent,  data = advancedPitchers)  
+  
+summary(mylm)$r.squared  
 
-mylm <- lm(on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_percent * sweet_spot_percent * barrel_batted_rate * solidcontact_percent,  data = advancedPitchers)
-```{r Third model}
+```{r Third model, echo=FALSE, message=FALSE, warning=FALSE}
+
 #Let's explore another model idea using advanced metrics for hitters
 mylm <- lm(on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_percent * sweet_spot_percent * barrel_batted_rate * solidcontact_percent,  data = advancedPitchers)
 
 #Analyze Findings
-summary(mylm)
+#summary(mylm)
 summary(mylm)$r.squared 
 
 ```
 Why is it so hard for us to find something that is significant? We have learned that it is defintely hard to find a small difference.This chart shows just that. Over the past 5 years, it looks as if the mean OBP just has not changed with most of the pitchers being right around the same area. Of course, there are outliers such as Justin Verlander that completely go against any sort of predictive model. The following graph shows the trends of OBP from the past 5 years.
 
-```{r Conclusion}
+```{r Conclusion, echo=FALSE, message=FALSE, warning=FALSE}
+
 ggplot(advancedPitchers, aes(x=year, y=on_base_percent, group = year)) +
   geom_boxplot()
 
