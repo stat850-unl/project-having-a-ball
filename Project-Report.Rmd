@@ -170,7 +170,7 @@ However, this time we wanted to be slightly more intelligent and so we decided t
 ```{r pitchers, echo=FALSE, message=FALSE, warning=FALSE}
 
 #Read in data, cast as tibble
-pitchers <-  read_csv("stats.csv")
+pitchers <-  read_csv("CSVs/stats.csv")
 pitchers <- tibble(pitchers)
 pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
 
@@ -273,7 +273,7 @@ We had the tools to create an application that would assist in showing that our 
 
 ```{r shiny, echo=FALSE, message=FALSE, warning=FALSE}
 #Read in data, cast as tibble
-pitchers <-  read_csv("stats.csv")
+pitchers <-  read_csv("CSVs/stats.csv")
 pitchers <- tibble(pitchers)
 
 pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
@@ -374,7 +374,7 @@ shinyApp(ui = ui, server = server)
 In order to find what other statistics might be of assistance, we put together a crossplot to examine the correlation among the variables.  
 
 ```{r scatterplot graph, echo=FALSE, message=FALSE, warning=FALSE}
-pitchers <-  read_csv("stats.csv")
+pitchers <-  read_csv("CSVs/stats.csv")
 pitchers <- tibble(pitchers)
 
 pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
@@ -403,7 +403,7 @@ Realizing that there was a significant interaction with Strikes, Walks, and OBP,
 
 ```{r OBPbyStrikeouts, echo=FALSE, message=FALSE, warning=FALSE}
 #Read in data, cast as tibble
-pitchers <-  read_csv("stats.csv")
+pitchers <-  read_csv("CSVs/stats.csv")
 pitchers <- tibble(pitchers)
 
 pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
@@ -460,7 +460,7 @@ Note how Jason Verlander has two of the greatest seasons ever by both OBP and st
 
 ```{r OBPbyWalks, echo=FALSE, message=FALSE, warning=FALSE}
 #Read in data, cast as tibble
-pitchers <-  read_csv("stats.csv")
+pitchers <-  read_csv("CSVs/stats.csv")
 pitchers <- tibble(pitchers)
 
 pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
@@ -515,7 +515,7 @@ Here again you can see Jason Verlander's Cy Young seasons in which he allows alm
 
 ```{r StrikeoutsByWalks, echo=FALSE, message=FALSE, warning=FALSE}
 #Read in data, cast as tibble
-pitchers <-  read_csv("stats.csv")
+pitchers <-  read_csv("CSVs/stats.csv")
 pitchers <- tibble(pitchers)
 
 pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
@@ -575,7 +575,7 @@ With the development of numerous throwing programs and velocity being at the for
 To hopefully build a model using advanced metrics, we will develop some visuals to find relationships between these variables and OBP.
 
 *#We need to read in our new data*  
-advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")  
+advancedPitchers <-  read_csv("CSVs/AdvancedPitcherMetrics.csv")  
 advancedPitchers <- tibble(advancedPitchers)  
 advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))  
 advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]  
@@ -586,7 +586,7 @@ advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]
 ```{r Advanced Graphs, echo=FALSE, message=FALSE, warning=FALSE}
 library(ggplot2)
 
-advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
+advancedPitchers <-  read_csv("CSVs/AdvancedPitcherMetrics.csv")
 advancedPitchers <- tibble(advancedPitchers)
 advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
 advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]

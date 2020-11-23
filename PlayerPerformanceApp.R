@@ -3,7 +3,7 @@ library(tidyverse)
 library(DT)
 
 #Read in data, cast as tibble
-pitchers <-  read_csv("stats.csv")
+pitchers <-  read_csv("CSVs/stats.csv")
 pitchers <- tibble(pitchers)
 
 pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
@@ -102,4 +102,5 @@ server <- function(input, output) {
 
 # Run the application
 shinyApp(ui = ui, server = server)
+```
 

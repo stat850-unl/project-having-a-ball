@@ -157,7 +157,7 @@ pitchers <- pitchers[complete.cases(pitchers),]
 
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, out.width='100%'}
-knitr::include_graphics('./R2.png')
+knitr::include_graphics('Images/R2.png')
 ```
 
 ## After the MCU
@@ -171,7 +171,7 @@ knitr::include_graphics('./R2.png')
 ## Crossplot
 
 ```{r, echo=FALSE, out.width='100%'}
-knitr::include_graphics('./Crossplot Matrix.png')
+knitr::include_graphics('Images/Crossplot Matrix.png')
 ```
 
 
@@ -184,7 +184,7 @@ To me, the most interesting thing was strikeouts by OBP, so I made an interactiv
 ```{r interactive graph, error=FALSE, message=FALSE, warning=FALSE, include=TRUE }
 
 #Read in data, cast as tibble
-pitchers <-  read_csv("stats.csv")
+pitchers <-  read_csv("CSVs/stats.csv")
 pitchers <- tibble(pitchers)
 
 pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
@@ -240,7 +240,7 @@ figure(width = 800, height = 500) %>%
 
 ```{r, error=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 #Read in data, cast as tibble
-pitchers <-  read_csv("stats.csv")
+pitchers <-  read_csv("CSVs/stats.csv")
 pitchers <- tibble(pitchers)
 
 pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
@@ -295,7 +295,7 @@ figure(width = 800, height = 500) %>%
 
 ```{r, error=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 #Read in data, cast as tibble
-pitchers <-  read_csv("stats.csv")
+pitchers <-  read_csv("CSVs/stats.csv")
 pitchers <- tibble(pitchers)
 
 pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
@@ -351,7 +351,7 @@ figure(width = 800, height = 500) %>%
 - We're going to look at projecting OBP and Wins using some advanced metrics.
 
 ```{r error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
-advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
+advancedPitchers <-  read_csv("CSVs/AdvancedPitcherMetrics.csv")
 advancedPitchers <- tibble(advancedPitchers)
 advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
 
@@ -461,10 +461,10 @@ Projecting pitching success in baseball is very unpredictable. To further suppor
 ## Examples of two men: Bob Welch
 
 ```{r Welch, echo=FALSE, out.width='100%'}
-knitr::include_graphics('./Welch photo.JPG')
+knitr::include_graphics('Images/Welch photo.JPG')
 ```
 ```{r Welch info, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
-TwoPitchers <-  read_csv("Welchtable.csv")
+TwoPitchers <-  read_csv("CSVs/Welchtable.csv")
 TwoPitchers <- select(tibble(TwoPitchers), Year, ERA, W, L, IP, BB, SO, Awards)
 Welch <- filter(TwoPitchers, Year == "1990")
 OBP<- c(.302)
@@ -476,7 +476,7 @@ df2
 ## Examples of two men: Jacob deGrom
 
 ```{r deGrom, echo=FALSE, warning=FALSE, message=FALSE, out.width='100%'}
-knitr::include_graphics('./deGrom.JPG')
+knitr::include_graphics('Images/deGrom.JPG')
 ```
 
 ```{r deGrom info, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=FALSE, results=FALSE}
@@ -484,7 +484,7 @@ knitr::include_graphics('./deGrom.JPG')
 ```
 ```{r deGrom info final, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
 
-TwoPitchers <-  read_csv("deGromTable.csv")
+TwoPitchers <-  read_csv("CSVs/deGromTable.csv")
 TwoPitchers <- select(tibble(TwoPitchers), Year, ERA, W, L, IP, BB, SO, Awards)
 deGrom <- filter(TwoPitchers, Year == "2018")
 OBP<- c(.243)

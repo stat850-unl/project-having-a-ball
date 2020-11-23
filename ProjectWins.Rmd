@@ -2,7 +2,7 @@ To an outside person who wouldn't know the tiny details about baseball, one migh
 ```{r Non-Sports Background}
 library(ggplot2)
 #Read in data
-advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
+advancedPitchers <-  read_csv("CSVs/AdvancedPitcherMetrics.csv")
 advancedPitchers <- tibble(advancedPitchers)
 advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
 
