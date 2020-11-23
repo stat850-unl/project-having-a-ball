@@ -1,0 +1,667 @@
+---
+title: "850 Project Report"
+author: "Michael Grantham, Jayden Kass"
+date: "11/22/2020"
+output: html_document
+---
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+library(aod)
+library(mgcv)
+library(ggplot2)
+library(Lahman)
+library(quanteda)
+library(tidyverse)
+library(quanteda)
+library(GGally)
+library(rbokeh)
+library(shiny)
+library(DT)
+#devtools::install_github("bokeh/rbokeh@v0.6.3")
+
+```
+## Introduction 
+Baseball is perhaps the major team sport most amenable to statistical analysis. There are many reasons for this. For one the number of years for which data is available is comparatively quite large. As well, baseball has a very discrete setup where every conceivable configuration of batters on base, pitch count, and every other variable is likely to occur in a very nearly independent trial at some point during the season. Probably, many more times than just once. As a result, a vast swath of statistical research has been conducted in the field of baseball by the Society of American Baseball Research and by baseball fans the world over. Sabermetrics, as they are known (S-A-B-R), have given rise to much inquiry into baseball like the development of advanced statistics and the prediction of team strength and likely wins. Sabermetrics have been used by the top brass in the MLB to do everything from scouting reports to team construction.  
+
+One such very notable example is explored in "Moneyball" by Michael Lewis, the popular book which was made into the eponymously named movie starring Brad Pitt. Chronicled within is the amazing true story of how Billy Beane revolutionized how the game of baseball is strategized and played by focusing all his efforts around a single statistic--OBP--and in doing so took his failing Oakland A's to an amazing record of 103-59 with the smallest budget in baseball, with a 20 game winstreak--the best winstreak in 67 years to that point.  
+
+Inspired by Billy Bean's success, We decided to try our hand at Sabermetrics. Our original premise was to explore the development of a new statistic--The level of contact. This is a "sub statistic" derived from the quality of contact of Sabermetrics. Unfortunately, we quickly discovered that the data we needed was not available to students, so we reformed our conception into a prediction of pitcher success using commonly available metrics. We found a dataset going back to the late 1800's which we were sure would be more than sufficient.
+
+Pitcher success is not strictly measured by statistical output, but by the variables that he can control. Instead of thinking of 
+  
+## Data Description 
+The data in the Lahman set contained just about every statistical metric we could imagine needing going all the way back to 1871. We knew that in order to predict pitcher success, it would probably be best to know the total number of innings pitched (IP), along with Wins and Losses (W,L), walks and strikeouts (BB, SO), ERA and Batting Average of the opposing team (ERA, BAOpp), Homeruns (HR), and the number of times the pitcher was able to Ground into Double Play (GIDP). With just those variables, it seemed likely to us that we could predict a lot of pitcher success. For practical purposes, filtering the Lahman data set to players and variables that are applicable to our lifetimes was a necessity for us to continue with our exploration. 
+
+As we came to learn and as we will discuss later, wins are not easily predicted by these statistics--nor by any combination thereof.
+
+Therefore, we had to get a little creative and look at some other advanced statistics, such as Hard Hit Percent, Barrel Batted Percent, Quality Contact, Launch Angle, Average Curveball rotations per second, Average Fastball Speed, and a few others.
+
+
+Data Summary
+In our project, we did everything we could to find the predictive power of all of these variables in order to hopefully find a metric which could be used to reliably measure a pitcher's objective success as a pitcher. We were a bit hasty and so we actually began with models rather than data exploration--so our report will follow the actual sequence of events which we followed as a team.
+  
+## Building a Model 
+
+We began by taking the variables we mentioned before and normalizing them so that our regression would have meaningful results. It was accomplished with the following code:
+  
+*#Select columns from the Pitching dataset*  
+pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA, W, L)  
+  
+*#Create a Net Wins column*  
+pitchers <- pitchers %>% mutate(NetWins = W-L)  
+  
+*#Only keep rows where there is no missing data*  
+pitchers <- pitchers[complete.cases(pitchers),]  
+  
+*#Normalize data so that coefficients are meaningful*  
+pitchers <- pitchers %>% mutate(normIPouts = (IPouts - mean(IPouts)) / sd(IPouts))  
+pitchers <- pitchers %>% mutate(normBB = (BB - mean(BB)) / sd(BB))  
+pitchers <- pitchers %>% mutate(normSO = (SO - mean(SO)) / sd(SO))  
+pitchers <- pitchers %>% mutate(normBAOpp = (BAOpp - mean(BAOpp)) / sd(BAOpp))  
+pitchers <- pitchers %>% mutate(normERA = (ERA - mean(ERA)) / sd(ERA))  
+
+*#Build Linear Model*  
+mylm <- lm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)  
+
+*#Analyze Findings*  
+summary(mylm)$r.squared   
+
+```{r regression, echo=FALSE, message=FALSE}
+#Select columns from the Pitching dataset
+pitchers <- select(tibble(Pitching), playerID, yearID, teamID, IPouts, BB, SO, BAOpp, ERA, W, L)
+
+#Create a Net Wins column
+pitchers <- pitchers %>% mutate(NetWins = W-L)
+
+#Only keep rows where there is no missing data
+pitchers <- pitchers[complete.cases(pitchers),]
+
+#Normalize data so that coefficients are meaningful
+pitchers <- pitchers %>% mutate(normIPouts = (IPouts - mean(IPouts)) / sd(IPouts))
+pitchers <- pitchers %>% mutate(normBB = (BB - mean(BB)) / sd(BB))
+pitchers <- pitchers %>% mutate(normSO = (SO - mean(SO)) / sd(SO))
+pitchers <- pitchers %>% mutate(normBAOpp = (BAOpp - mean(BAOpp)) / sd(BAOpp))
+pitchers <- pitchers %>% mutate(normERA = (ERA - mean(ERA)) / sd(ERA))
+
+
+
+#Build Linear Model
+mylm <- lm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
+
+#Analyze Findings
+summary(mylm)$r.squared 
+
+```
+
+However, we quickly realized that our regression was terrible. Supposing that perhaps a more advanced regression technique was required, we looked at a generalized additive model and a general linear model. The code and rsquared values for these regressions are contained below:
+   
+mygam <- gam(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)  
+summary(mygam)$r.squared  
+  
+  
+```{r gam, echo = FALSE}
+mygam <- gam(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
+summary(mygam)$r.squared
+```
+  
+  
+myglm <- glm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, family = gaussian, data = pitchers)  
+summary(myglm)$r.squared  
+```{r glm, echo = FALSE}
+myglm <- glm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, family = gaussian, data = pitchers)
+summary(myglm)$r.squared
+```
+
+Obviously an Rsquared value of NULL isn't very good. But can we do any better?
+
+## Infinite Power
+
+In order to see what kind of relationship might exist--even nonlinear, nonsensical relationships--we decided to try an interaction plot just to see what would happen. We decided to throw every variable imaginable at the new NetWins column to see what could be predicted. This was accomplished with the following code and corresponding Rsquared result:
+
+*#Select columns from the Pitching dataset*  
+pitchers <- tibble(Pitching)  
+  
+*#Create a Net Wins column*  
+pitchers <- pitchers %>% mutate(NetWins = W-L)  
+  
+*#Only keep rows where there is no missing data*  
+pitchers <- pitchers[complete.cases(pitchers),]  
+  
+mylm <- lm(NetWins ~ IPouts * HR * BB * SO * BAOpp * ERA *IBB * WP * HBP * BK * BFP * GIDP, data = pitchers)  
+  
+*#Analyze Findings*
+summary(mylm)$r.squared 
+
+```{r interaction2, echo=FALSE}
+#Select columns from the Pitching dataset
+pitchers <- tibble(Pitching)
+
+#Create a Net Wins column
+pitchers <- pitchers %>% mutate(NetWins = W-L)
+
+#Only keep rows where there is no missing data
+pitchers <- pitchers[complete.cases(pitchers),]
+
+#In order to save you the 15 minutes required to run this regression, it is commented out.
+
+#mylm <- lm(NetWins ~ IPouts*HR*BB*SO*BAOpp*ERA*IBB*WP*HBP*BK*BFP*GIDP, data = pitchers)
+
+#Analyze Findings
+#summary(mylm)$r.squared 
+
+```
+
+```{r, echo=FALSE, message=FALSE, error=FALSE, out.width='100%'}
+#Instead, we've included a giant picture of the Rsquared value
+knitr::include_graphics('./R2.png')
+```
+
+At this point we realized something was seriously wrong with our thinking. NetWins is not predictable even after accounting for every other variable imaginable? 
+
+Discussions revealed that perhaps NetWins is not a good metric to be estimating because a good pitcher might pitch for a bad team and so he would have a bad NetWins number despite his outstanding performance in every other regard. 
+
+Following Billy Beane's insight, we decided to predict OBP instead of NetWins, reasoning that if a high OBP is strongly correlated with offensive production, a pitcher's OBP should be strongly correlated with pitcher success.
+
+After further evaluation, it definitely became clear that we were chasing models too early, and a deeper understanding our of data needed to be known before we tried our hand at constructing another model. A visual representation of the data would be more appropriate for our ultimate goal. We need to remember to have our questions guide use to a statistics, not have statistics guide us to questions (Weinberg, 2014).
+  
+## Data Exploration
+However, this time we wanted to be slightly more intelligent and so we decided that a little data exploration was due. We had supposed that player performance was roughly quadratic so that a pitcher would have a subpar rookie year before maxing out in his prime years and then waning as he progressed in years. We produced the following two graphs to see if this is indeed the pattern:
+
+```{r pitchers, echo=FALSE, message=FALSE, warning=FALSE}
+
+#Read in data, cast as tibble
+pitchers <-  read_csv("stats.csv")
+pitchers <- tibble(pitchers)
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+#Rearrange by age and then name 
+pitchers <- pitchers[order(pitchers$player_age),]
+pitchers <- pitchers[order(pitchers$name),]
+
+
+#Aggregate by age and find the mean OBP for each age
+pitchers_aggregated_by_age <- pitchers %>%                                       
+  group_by(player_age) %>%                        
+  summarise_at(vars(on_base_percent),          
+               list(OBP = mean))               
+
+#The original idea was to graph the pitcher data by age, but we ran into a problem. Obviously if your OBP jumps too much, you get booted. So the average was relatively stable over time, except on the old end. 
+ggplot(pitchers_aggregated_by_age, aes(player_age, OBP, fill = "green")) +
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  ggtitle("OBP by age") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+#The remedy is to find the average OBP by "year in the league".
+
+#Add an empty column that we can populate in the next chunk
+emptycolumn <- c("Years_In_Pitching")
+pitchers[ , emptycolumn] <- NA
+
+
+pitchers$Years_In_Pitching[1]<-1
+
+i<-2
+while (i < length(pitchers$Years_In_Pitching)){
+  if(i==1){
+    pitchers$Years_In_Pitching[i]=1
+    i=i+1
+    }
+  else if(pitchers$name[i]==pitchers$name[i-1]){
+    pitchers$Years_In_Pitching[i]=pitchers$Years_In_Pitching[i-1]+1
+    i=i+1
+    }
+  else if(pitchers$name[i]!=pitchers$name[i-1]){
+    pitchers$Years_In_Pitching[i] = 1
+    i=i+1
+  }
+}
+
+#Aggregate by Years In Pitching and find the mean OBP for each of these
+pitchers_by_years_pitched <- pitchers %>%                                       
+  group_by(Years_In_Pitching) %>%                        
+  summarise_at(vars(on_base_percent),          
+               list(OBP = mean))       
+
+#Plot results
+ggplot(pitchers_by_years_pitched, aes(Years_In_Pitching, OBP, fill = "green")) +
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  ggtitle("OBP by Years in Pitching") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+
+Looking at these graphs, that we knew something strange was happening. Why was there seemingly no relationship between age and OBP, and years played and OBP? This is quite counterintuitive. Thinking perhaps we had made a mistake somewhere in the code, we developed a few custom graphs of random names to make sure we weren't seeing amiss.  
+
+```{r echo=FALSE}
+#Look at the trajectories of several careers.
+
+AndyBenes <- pitchers %>% filter(name == "Andy Benes")
+
+ggplot(AndyBenes, aes(Years_In_Pitching, on_base_percent, fill = "green")) +
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  ggtitle("Andy Benes OBP by Years in Pitching") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+AJBurnett <- pitchers %>% filter(name == "A.J. Burnett")
+
+ggplot(AJBurnett, aes(Years_In_Pitching, on_base_percent, fill = "green")) +
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  ggtitle("AJ Burnett OBP by Years in Pitching") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+AdamWainwright <- pitchers %>% filter(name== "Adam Wainwright")
+
+ggplot(AdamWainwright, aes(Years_In_Pitching, on_base_percent, fill = "green")) +
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  ggtitle("Adam Wainwright OBP by Years in Pitching") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+AndyPettitte <- pitchers %>% filter(name== "Andy Pettitte")
+
+ggplot(AndyPettitte, aes(Years_In_Pitching, on_base_percent, fill = "green")) +
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  ggtitle("Andy Pettitte OBP by Years in Pitching") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Clearly, our averaging of results was not masking a signal in the data--there simply is no signal. To confirm this we constructed an interactive table and graph to be absolutely certain.  
+
+
+We had the tools to create an application that would assist in showing that our original hypothesis was, in fact, incorrect about pitcher performance according to point of career. We are able to select a player and corresponding year in which they were in the league. A bar chart will be rendered to resemble the selected player's OBP given up as they progress in their career.
+
+```{r shiny}
+#Read in data, cast as tibble
+pitchers <-  read_csv("stats.csv")
+pitchers <- tibble(pitchers)
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers[order(pitchers$player_age),]
+
+pitchers <- pitchers[order(pitchers$name),]
+
+emptycolumn <- c("Years_In_Pitching")
+pitchers[ , emptycolumn] <- NA
+
+
+pitchers$Years_In_Pitching[1]<-1
+
+i<-2
+while (i < length(pitchers$Years_In_Pitching)){
+  if(i==1){
+    pitchers$Years_In_Pitching[i]=1
+    i=i+1
+  }
+  else if(pitchers$name[i]==pitchers$name[i-1]){
+    pitchers$Years_In_Pitching[i]=pitchers$Years_In_Pitching[i-1]+1
+    i=i+1
+  }
+  else if(pitchers$name[i]!=pitchers$name[i-1]){
+    pitchers$Years_In_Pitching[i] = 1
+    i=i+1
+  }
+}
+
+Qualifiedpitchers <- pitchers %>% filter(Years_In_Pitching > 5)
+
+library(ggplot2)
+
+shinyApp(
+  
+
+ui <- fluidPage(
+  titlePanel("Pitcher Performance"),
+
+  # Create a new Row in the UI for select Inputs
+  fluidRow(
+    column(4,
+           selectInput("player",
+                       "Pitcher:",
+                       c("All",
+                         unique(as.character(pitchers$name))))
+    ),
+    column(4,
+           selectInput("yearInLeague",
+                       "Year:",
+                       c("All",
+                         unique(as.character(pitchers$year))))
+    ),
+  ),
+  # Create a new row for the table.
+  DT::dataTableOutput("table"),
+  
+  plotOutput("bar")
+
+),
+
+
+server <- function(input, output) {
+
+  #Filter data based on selections
+  output$table <- DT::renderDataTable(DT::datatable({
+    data <- pitchers
+    if (input$player != "All") {
+      data <- data[data$name == input$player,]
+    }
+    if (input$yearInLeague != "All") {
+      data <- data[data$year == input$yearInLeague,]
+    }
+  }))
+
+  
+  output$bar <- renderPlot ({
+    pitchers %>% dplyr::filter(name == input$player, 
+                    # year == input$yearInLeague
+                    ) %>% 
+     ggplot(aes(x = Years_In_Pitching, y = on_base_percent)) + 
+      geom_bar(stat = "identity", show.legend = FALSE) +
+      ggtitle("Career OBP ")
+  })
+  
+  
+  
+}
+)
+# Run the application
+shinyApp(ui = ui, server = server)
+
+
+```
+
+
+In order to find what other statistics might be of assistance, we put together a crossplot to examine the correlation among the variables.  
+
+```{r scatterplot graph, echo=FALSE, message=FALSE, warning=FALSE}
+pitchers <-  read_csv("stats.csv")
+pitchers <- tibble(pitchers)
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers[order(pitchers$player_age),]
+
+pitchers <- pitchers[order(pitchers$name),]
+
+pitchers <- pitchers %>% mutate(decade = (year %/% 10)*10)
+pitchers <- pitchers %>% mutate(sdecade = format(decade, digits = 4))
+
+colnames(pitchers)[colnames(pitchers) == "player_age"] <- "Player Age"
+colnames(pitchers)[colnames(pitchers) == "p_strikeout"] <- "Strikeouts"
+colnames(pitchers)[colnames(pitchers) == "p_walk"] <- "Walks"
+colnames(pitchers)[colnames(pitchers) == "on_base_percent"] <- "OBP"
+
+ggpairs(pitchers, mapping = aes(color = sdecade, alpha=.6, legend.position = "left"), columns = c(4,14,15,20)) 
+
+ggsave(file="Crossplot Matrix.png", width=8, height=5, dpi=500)
+
+```
+
+## Interact with the Data  
+  
+Realizing that there was a significant interaction with Strikes, Walks, and OBP, we made a few interactive graphs to explore further.
+
+```{r OBPbyStrikeouts, echo=FALSE, message=FALSE, warning=FALSE}
+#Read in data, cast as tibble
+pitchers <-  read_csv("stats.csv")
+pitchers <- tibble(pitchers)
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers[order(pitchers$player_age),]
+
+pitchers <- pitchers[order(pitchers$name),]
+
+colnames(pitchers)[colnames(pitchers) == "player_age"] <- "Player Age"
+colnames(pitchers)[colnames(pitchers) == "name"] <- "Name"
+colnames(pitchers)[colnames(pitchers) == "year"] <- "Year"
+colnames(pitchers)[colnames(pitchers) == "p_strikeout"] <- "Strikeouts"
+colnames(pitchers)[colnames(pitchers) == "p_walk"] <- "Walks"
+colnames(pitchers)[colnames(pitchers) == "on_base_percent"] <- "OBP"
+
+
+#Add an empty column that we can populate in the next chunk
+emptycolumn <- c("Years_In_Pitching")
+pitchers[ , emptycolumn] <- NA
+
+
+pitchers$Years_In_Pitching[1]<-1
+
+i<-2
+while (i < length(pitchers$Years_In_Pitching)){
+  if(i==1){
+    pitchers$Years_In_Pitching[i]=1
+    i=i+1
+    }
+  else if(pitchers$Name[i]==pitchers$Name[i-1]){
+    pitchers$Years_In_Pitching[i]=pitchers$Years_In_Pitching[i-1]+1
+    i=i+1
+    }
+  else if(pitchers$Name[i]!=pitchers$Name[i-1]){
+    pitchers$Years_In_Pitching[i] = 1
+    i=i+1
+  }
+}
+
+pitchers <- pitchers %>% mutate(decade = (Year %/% 10)*10)
+pitchers <- pitchers %>% mutate(Decade = format(decade, digits = 4))
+pitchers <- pitchers %>% select(-26)
+
+
+figure(width = 800, height = 500) %>%
+  ly_points(x = OBP, y = Strikeouts, color = Decade,
+  data = pitchers, hover = list(Name, Year, OBP, Strikeouts))
+
+```
+  
+Note how Jason Verlander has two of the greatest seasons ever by both OBP and strikeouts in two years. In fact, he appears to get better over time! His 2019 season can be found as the top leftmost orange dot, and his 2011 season is nearby but not quite as impressive. Can you find it?  
+
+```{r OBPbyWalks, echo=FALSE, message=FALSE, warning=FALSE}
+#Read in data, cast as tibble
+pitchers <-  read_csv("stats.csv")
+pitchers <- tibble(pitchers)
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers[order(pitchers$player_age),]
+
+pitchers <- pitchers[order(pitchers$name),]
+
+colnames(pitchers)[colnames(pitchers) == "player_age"] <- "Player Age"
+colnames(pitchers)[colnames(pitchers) == "name"] <- "Name"
+colnames(pitchers)[colnames(pitchers) == "year"] <- "Year"
+colnames(pitchers)[colnames(pitchers) == "p_strikeout"] <- "Strikeouts"
+colnames(pitchers)[colnames(pitchers) == "p_walk"] <- "Walks"
+colnames(pitchers)[colnames(pitchers) == "on_base_percent"] <- "OBP"
+
+
+#Add an empty column that we can populate in the next chunk
+emptycolumn <- c("Years_In_Pitching")
+pitchers[ , emptycolumn] <- NA
+
+
+pitchers$Years_In_Pitching[1]<-1
+
+i<-2
+while (i < length(pitchers$Years_In_Pitching)){
+  if(i==1){
+    pitchers$Years_In_Pitching[i]=1
+    i=i+1
+    }
+  else if(pitchers$Name[i]==pitchers$Name[i-1]){
+    pitchers$Years_In_Pitching[i]=pitchers$Years_In_Pitching[i-1]+1
+    i=i+1
+    }
+  else if(pitchers$Name[i]!=pitchers$Name[i-1]){
+    pitchers$Years_In_Pitching[i] = 1
+    i=i+1
+  }
+}
+
+pitchers <- pitchers %>% mutate(decade = (Year %/% 10)*10)
+pitchers <- pitchers %>% mutate(Decade = format(decade, digits = 4))
+pitchers <- pitchers %>% select(-26)
+
+figure(width = 800, height = 500) %>%
+  ly_points(x = OBP, y = Walks, color = Decade,
+  data = pitchers, hover = list(Name, Year, OBP, Strikeouts))
+```
+  
+Here again you can see Jason Verlander's Cy Young seasons in which he allows almost no walks despite his great strikeout numbers. More on this later.  
+
+```{r StrikeoutsByWalks, echo=FALSE, message=FALSE, warning=FALSE}
+#Read in data, cast as tibble
+pitchers <-  read_csv("stats.csv")
+pitchers <- tibble(pitchers)
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers %>% mutate(name=paste(first_name, last_name))
+
+pitchers <- pitchers[order(pitchers$player_age),]
+
+pitchers <- pitchers[order(pitchers$name),]
+
+colnames(pitchers)[colnames(pitchers) == "player_age"] <- "Player Age"
+colnames(pitchers)[colnames(pitchers) == "name"] <- "Name"
+colnames(pitchers)[colnames(pitchers) == "year"] <- "Year"
+colnames(pitchers)[colnames(pitchers) == "p_strikeout"] <- "Strikeouts"
+colnames(pitchers)[colnames(pitchers) == "p_walk"] <- "Walks"
+colnames(pitchers)[colnames(pitchers) == "on_base_percent"] <- "OBP"
+
+
+#Add an empty column that we can populate in the next chunk
+emptycolumn <- c("Years_In_Pitching")
+pitchers[ , emptycolumn] <- NA
+
+
+pitchers$Years_In_Pitching[1]<-1
+
+i<-2
+while (i < length(pitchers$Years_In_Pitching)){
+  if(i==1){
+    pitchers$Years_In_Pitching[i]=1
+    i=i+1
+    }
+  else if(pitchers$Name[i]==pitchers$Name[i-1]){
+    pitchers$Years_In_Pitching[i]=pitchers$Years_In_Pitching[i-1]+1
+    i=i+1
+    }
+  else if(pitchers$Name[i]!=pitchers$Name[i-1]){
+    pitchers$Years_In_Pitching[i] = 1
+    i=i+1
+  }
+}
+
+pitchers <- pitchers %>% mutate(decade = (Year %/% 10)*10)
+pitchers <- pitchers %>% mutate(Decade = format(decade, digits = 4))
+pitchers <- pitchers %>% select(-26)
+
+
+
+figure(width = 800, height = 500) %>%
+  ly_points(x = Strikeouts, y = Walks, color = Decade,
+  data = pitchers, hover = list(Name, Year, OBP, Strikeouts))
+```
+
+With Sabermetrics taking over baseball, it was not difficult to find advanced analytics for our pitchers. However, it is difficult to understand what may factor in a pitchers OBP allowed. We sought to test something from our original premise and included variables of quality of contact including exit velocity, launch angle, hard hit percentage, sweet spot percentage, barrel batted rate, and solid contact percentage. 
+
+With the development of numerous throwing programs and velocity being at the forefront of scouting, we also included advanced pitching metrics that include average fastball velocity, average breaking ball velocity, average offspeed velocity, average fastball spin, average breaking ball spin, and average offspeed spin.
+
+To hopefully build a model using advanced metrics, we will develop some visuals to find relationships between these variables and OBP.
+
+*#We need to read in our new data*
+advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
+advancedPitchers <- tibble(advancedPitchers)
+advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
+
+advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
+
+advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]
+
+
+
+
+```{r Advanced Graphs}
+library(ggplot2)
+
+advancedPitchers <-  read_csv("AdvancedPitcherMetrics.csv")
+advancedPitchers <- tibble(advancedPitchers)
+advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
+
+advancedPitchers <- advancedPitchers %>% mutate(name=paste(first_name, last_name))
+
+advancedPitchers <- advancedPitchers[order(advancedPitchers$name),]
+
+ggplot(data = advancedPitchers) + geom_point(aes(x = fastball_avg_speed, y = on_base_percent, color= year))
+
+ggplot(data = advancedPitchers) + geom_point(aes(x = hard_hit_percent, y = on_base_percent, color= year))
+
+ggplot(data = advancedPitchers) + geom_point(aes(x = exit_velocity_avg, y = on_base_percent, color= year))
+
+ggplot(data = advancedPitchers) + geom_point(aes(x = launch_angle_avg, y = on_base_percent, color= year))
+
+ggplot(data = advancedPitchers) + geom_point(aes(x = barrel_batted_rate, y = on_base_percent, color= year))
+
+ggplot(data = advancedPitchers) + geom_point(aes(x = breaking_avg_spin, y = on_base_percent, color= year))
+
+ggplot(data = advancedPitchers) + geom_point(aes(x = sweet_spot_percent, y = on_base_percent, color= year))
+
+ggplot(data = advancedPitchers) + geom_point(aes(x = year, y = on_base_percent, color= year))
+
+
+```
+We did find some statistics that had positive trends. Are the significant enough to be useful? Let's find out!
+```{r first model}
+mylm <- lm(on_base_percent ~  hard_hit_percent * sweet_spot_percent * exit_velocity_avg * year, data = advancedPitchers)
+
+#Analyze Findings
+summary(mylm)
+summary(mylm)$r.squared 
+```
+Let's throw Everything on the pitching side.
+```{r second}
+
+mylm <- lm(on_base_percent ~  fastball_avg_speed * breaking_avg_speed * offspeed_avg_speed * fastball_avg_spin * breaking_avg_spin * offspeed_avg_spin, data = advancedPitchers)
+
+#Analyze Findings
+summary(mylm)
+summary(mylm)$r.squared 
+
+#These findings still don't really help us at all. Back to the drawing board.
+
+```
+Let's throw everything on the hitting side.
+
+mylm <- lm(on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_percent * sweet_spot_percent * barrel_batted_rate * solidcontact_percent,  data = advancedPitchers)
+```{r Third model}
+#Let's explore another model idea using advanced metrics for hitters
+mylm <- lm(on_base_percent ~  exit_velocity_avg * launch_angle_avg * hard_hit_percent * sweet_spot_percent * barrel_batted_rate * solidcontact_percent,  data = advancedPitchers)
+
+#Analyze Findings
+summary(mylm)
+summary(mylm)$r.squared 
+
+```
+Why is it so hard for us to find something that is significant? We have learned that it is defintely hard to find a small difference.This chart shows just that. Over the past 5 years, it looks as if the mean OBP just has not changed with most of the pitchers being right around the same area. Of course, there are outliers such as Justin Verlander that completely go against any sort of predictive model. The following graph shows the trends of OBP from the past 5 years.
+
+```{r Conclusion}
+ggplot(advancedPitchers, aes(x=year, y=on_base_percent, group = year)) +
+  geom_boxplot()
+
+
+```
+
+## Results and Conclusions
+It is is easy to see that from the above models, our idea of trying to predict pitcher success needs some work. With the data being so close together, it is nearly impossible to pinpoint a stand alone variable that would bring OBP significantly higher or significantly lower. We, however, do not think that this is the end of trying to predict a sufficient model. There were some positive associations between OBP and some variables. There were some significant interactions between variables that accounted for the higher r squared in our models.
+
+Baseball is an interesting game in the fact that it is such a big team game. No other sport contains the system that baseball implements i.e. the minor leagues where major league teams hold power over hundreds of other players aside from the players that reside on their major league team. Without going into too much detail, the way a pitcher's team performs around him can heavily inflate a lot of variables that we were using. If a pitcher pitches for a poor team, he could hold a 10-9 record but still win the Cy Young award (The award given to the best pitcher in all of the MLB). 
+After deliberation and talking more about why we couldn't find anything useful in our research, we concluded that there are too many outside variables that can factor in to player success. Team performance is the most essential variable we could think of. Potential for a new research topic would be the idea a new statistic called the adjusted win statistic that measures pitcher worth while being backed by the league average offense and defense. 
+
+
+## Group Members
+Michael Grantham  Jayden Stack
