@@ -160,7 +160,7 @@ pitchers <- pitchers[complete.cases(pitchers),]
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, out.width='100%'}
 #Instead, we've included a giant picture of the Rsquared value
-knitr::include_graphics('./R2.png')
+knitr::include_graphics('Images/R2.png')
 ```
 
 At this point we realized something was seriously wrong with our thinking. NetWins is not predictable even after accounting for every other variable imaginable? 
