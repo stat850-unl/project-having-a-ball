@@ -137,9 +137,8 @@ pitchers <- pitchers %>% mutate(NetWins = W-L)
 *#Only keep rows where there is no missing data*  
 pitchers <- pitchers[complete.cases(pitchers),]  
   
-mylm <- lm(NetWins ~ IPouts * HR * BB * SO * BAOpp * ERA *IBB * WP * HBP * BK * BFP * GIDP, data = pitchers)  
+mylm <- lm(NetWins ~ IPouts * HR * BB * SO * BAOpp * ERA * IBB * WP * HBP * BK * BFP * GIDP, data = pitchers)  
 
-> I don't care how much data you have, fitting a full interaction model is too much. Be strategic. Use stepwise regression... or just plot your data and add terms related to what you see!
 
 *#Analyze Findings*
 summary(mylm)$r.squared 
@@ -163,13 +162,14 @@ pitchers <- pitchers[complete.cases(pitchers),]
 
 ```
 
-> Or you could just say "The $R^2$ from the glm was `r rsq`"
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, out.width='100%'}
 #Instead, we've included a giant picture of the Rsquared value
 knitr::include_graphics('Images/R2.png')
 ```
-
+  
+This regression took 15 minutes every time we ran it. Lesson learned. In the future, it would make a lot more sense to do a stepwise regression and disregard terms that don't make any sense. Not only this, it would save a lot of time, headache, and software / hardware crashes.  
+  
 At this point we realized something was seriously wrong with our thinking. NetWins is not predictable even after accounting for every other variable imaginable? 
 
 Discussions revealed that perhaps NetWins is not a good metric to be estimating because a good pitcher might pitch for a bad team and so he would have a bad NetWins number despite his outstanding performance in every other regard. 
@@ -688,8 +688,7 @@ It is is easy to see that from the above models, our idea of trying to predict p
 Baseball is an interesting game in the fact that it is such a big team game. No other sport contains the system that baseball implements i.e. the minor leagues where major league teams hold power over hundreds of other players aside from the players that reside on their major league team. Without going into too much detail, the way a pitcher's team performs around him can heavily inflate a lot of variables that we were using. If a pitcher pitches for a poor team, he could hold a 10-9 record but still win the Cy Young award (The award given to the best pitcher in all of the MLB). 
 After deliberation and talking more about why we couldn't find anything useful in our research, we concluded that there are too many outside variables that can factor in to player success. Team performance is the most essential variable we could think of. Potential for a new research topic would be the idea a new statistic called the adjusted win statistic that measures pitcher worth while being backed by the league average offense and defense.  
 
-> I really like the narrative in your report! :) It looks good
-> I decided to provide a bit of feedback because I know you didn't get feedback from me a couple of weeks ago because things are nuts :)
+
 
 ## Group Members
 Michael Grantham  Jayden Stack
