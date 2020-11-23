@@ -43,8 +43,6 @@ In our project, we did everything we could to find the predictive power of all o
   
 ## Building a Model 
 
-> You don't need to show the code. Describe what you did in words, instead. :)
-
 
 We began by taking the variables we mentioned before and normalizing them so that our regression would have meaningful results. It was accomplished with the following code:
   
@@ -99,7 +97,6 @@ summary(mylm)$r.squared
 
 However, we quickly realized that our regression was terrible. Supposing that perhaps a more advanced regression technique was required, we looked at a generalized additive model and a general linear model. The code and rsquared values for these regressions are contained below:
 
-> Y'all are getting fancy!
    
 mygam <- gam(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)  
 summary(mygam)$r.squared  
@@ -108,8 +105,8 @@ summary(mygam)$r.squared
 ```{r gam, echo = FALSE}
 mygam <- gam(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, data = pitchers)
 rsq <- summary(mygam)$r.squared
+rsq
 ```
-  
   
 myglm <- glm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, family = gaussian, data = pitchers)  
 summary(myglm)$r.squared  
@@ -118,11 +115,8 @@ myglm <- glm(NetWins ~ normIPouts + normBB + normSO + normBAOpp + normERA, famil
 summary(myglm)$r.squared
 ```
 
-Obviously an Rsquared value of NULL isn't very good. But can we do any better?
+Obviously an $R^2$ value of NULL isn't very good. But can we do any better?
 
-> An R^2 value of null is... interesting and maybe indicative of something going wrong. I'm not debugging your model here, but you also don't have to fit a model for this project to be successful. 
-
-> But note that R^2 doesn't mean the same thing for glms, and it's not really accurate, so... you should be able to find a better way to analyze the data...
 
 ## Infinite Power
 
@@ -682,12 +676,53 @@ ggplot(advancedPitchers, aes(x=year, y=on_base_percent, group = year)) +
 
 ```
 
+
+## What did we find out?
+Projecting pitching success in baseball is very unpredictable. To further support this argument consider Jacob deGrom's Cy Young winning year in 2018 compared to Bob Welch's Cy Young winning year in 1990.
+
+## Examples Of Incongruities: Bob Welch
+
+```{r Welch, echo=FALSE, out.width='100%'}
+knitr::include_graphics('Images/Welch photo.JPG')
+```
+```{r Welch info, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
+TwoPitchers <-  read_csv("CSVs/Welchtable.csv")
+TwoPitchers <- select(tibble(TwoPitchers), Year, ERA, W, L, IP, BB, SO, Awards)
+Welch <- filter(TwoPitchers, Year == "1990")
+OBP<- c(.302)
+Welch <-cbind(Welch, OBP)
+df2 = Welch[,c(1,2,9,3:8)]
+df2
+```
+
+## Examples of Incongruities: Jacob deGrom
+
+```{r deGrom, echo=FALSE, warning=FALSE, message=FALSE, out.width='100%'}
+knitr::include_graphics('Images/deGrom.JPG')
+```
+
+
+```{r deGrom info final, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE, include=TRUE}
+
+TwoPitchers <-  read_csv("CSVs/deGromTable.csv")
+TwoPitchers <- select(tibble(TwoPitchers), Year, ERA, W, L, IP, BB, SO, Awards)
+deGrom <- filter(TwoPitchers, Year == "2018")
+OBP<- c(.243)
+deGrom <-cbind(deGrom, OBP)
+df2 = deGrom[,c(1,2,9,3:8)]
+df2
+
+```
+
+
 ## Results and Conclusions
 It is is easy to see that from the above models, our idea of trying to predict pitcher success needs some work. With the data being so close together, it is nearly impossible to pinpoint a stand alone variable that would bring OBP significantly higher or significantly lower. We, however, do not think that this is the end of trying to predict a sufficient model. There were some positive associations between OBP and some variables. There were some significant interactions between variables that accounted for the higher r squared in our models.
 
 Baseball is an interesting game in the fact that it is such a big team game. No other sport contains the system that baseball implements i.e. the minor leagues where major league teams hold power over hundreds of other players aside from the players that reside on their major league team. Without going into too much detail, the way a pitcher's team performs around him can heavily inflate a lot of variables that we were using. If a pitcher pitches for a poor team, he could hold a 10-9 record but still win the Cy Young award (The award given to the best pitcher in all of the MLB). 
 After deliberation and talking more about why we couldn't find anything useful in our research, we concluded that there are too many outside variables that can factor in to player success. Team performance is the most essential variable we could think of. Potential for a new research topic would be the idea a new statistic called the adjusted win statistic that measures pitcher worth while being backed by the league average offense and defense.  
 
+
+## Thank You!
 
 
 ## Group Members
